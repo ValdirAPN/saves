@@ -1,4 +1,4 @@
-package com.vpnt.saves.ui.theme
+package com.vpnt.saves.ui.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
