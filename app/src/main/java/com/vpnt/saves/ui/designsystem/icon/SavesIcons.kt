@@ -11,4 +11,7 @@ object SavesIcons {
     val BankAccountsOutlined = R.drawable.bank_outlined
     val Profile = R.drawable.profile
     val ProfileOutlined = R.drawable.profile_outlined
+    val User = R.drawable.user
+    val EyeOpen = R.drawable.eye_open
+    val EyeClosed = R.drawable.eye_closed
 }
