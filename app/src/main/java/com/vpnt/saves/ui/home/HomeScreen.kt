@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vpnt.saves.R
 import com.vpnt.saves.data.model.Transaction
+import com.vpnt.saves.extensions.format
+import com.vpnt.saves.extensions.toCurrency
 import com.vpnt.saves.ui.designsystem.icon.SavesIcons
 
 @Composable
@@ -123,7 +125,7 @@ fun BalanceCard(
             ) {
                 Text(text = title)
                 Spacer(modifier = Modifier.size(8.dp))
-                Text(text = "R$ $value", style = MaterialTheme.typography.headlineMedium)
+                Text(text = value.toCurrency(), style = MaterialTheme.typography.headlineMedium)
             }
 
             Button(
@@ -245,9 +247,9 @@ fun TransactionsList() {
                 ) {
                     Text(text = transaction.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Spacer(modifier = Modifier.size(4.dp))
-                    Text(text = transaction.date.toString(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(text = transaction.date.format(), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
                 }
-                Text(text = transaction.amount.toString(), style = MaterialTheme.typography.titleMedium)
+                Text(text = transaction.amount.toCurrency(), style = MaterialTheme.typography.titleMedium)
             }
         }
     }
