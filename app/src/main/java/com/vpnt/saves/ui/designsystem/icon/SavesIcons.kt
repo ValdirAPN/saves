@@ -14,4 +14,6 @@ object SavesIcons {
     val User = R.drawable.user
     val EyeOpen = R.drawable.eye_open
     val EyeClosed = R.drawable.eye_closed
+    val Messages = R.drawable.messages
+    val Logout = R.drawable.logout
 }
