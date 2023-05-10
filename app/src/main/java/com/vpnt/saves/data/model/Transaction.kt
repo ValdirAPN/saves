@@ -9,7 +9,7 @@ data class Transaction(
     val date: Date
 ) {
     companion object {
-        fun fakeList() = listOf<Transaction>(
+        fun fakeList() = listOf(
             Transaction(
                 id = "1",
                 title = "Gasolina",
