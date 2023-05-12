@@ -2,12 +2,15 @@ package com.vpnt.saves.ui.home
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -24,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,20 +37,21 @@ import com.vpnt.saves.R
 import com.vpnt.saves.data.model.Transaction
 import com.vpnt.saves.extensions.format
 import com.vpnt.saves.extensions.toCurrency
+import com.vpnt.saves.ui.designsystem.components.SavesCard
+import com.vpnt.saves.ui.designsystem.components.SavesClickableCard
+import com.vpnt.saves.ui.designsystem.components.SavesText
 import com.vpnt.saves.ui.designsystem.icon.SavesIcons
 
 @Composable
 fun HomeScreen() {
     Column(
         modifier = Modifier
-            .padding(top = 20.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
     ) {
-        Header()
-        Spacer(modifier = Modifier.size(20.dp))
         BalanceOverview()
-        Spacer(modifier = Modifier.size(16.dp))
+        Spacer(modifier = Modifier.size(24.dp))
         Actions()
-        Spacer(modifier = Modifier.size(20.dp))
+        Spacer(modifier = Modifier.size(24.dp))
         Transactions()
     }
 }
@@ -57,31 +63,6 @@ fun HomeScreenPreview() {
 }
 
 @Composable
-fun Header(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Icon(
-            painter = painterResource(SavesIcons.User),
-            contentDescription = null,
-            modifier = Modifier
-                .clip(shape = ShapeDefaults.ExtraLarge)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f))
-                .padding(8.dp)
-        )
-        Spacer(modifier = Modifier.size(12.dp))
-        Column {
-            Text(text = "Hello")
-            Text(text = "Valdir \uD83D\uDC4B")
-        }
-    }
-}
-
-@Composable
 fun BalanceOverview(
     modifier: Modifier = Modifier
 ) {
@@ -90,13 +71,13 @@ fun BalanceOverview(
             .fillMaxWidth()
     ) {
         BalanceCard(
-            title = "Monthly Expenses",
-            value = 3985.99
+            title = "Saldo",
+            value = 0.00
         )
         Spacer(modifier = Modifier.size(8.dp))
         BalanceCard(
-            title = "Balance available",
-            value = 4587.99
+            title = "Despesas do mês",
+            value = 2016.99
         )
     }
 }
@@ -106,66 +87,47 @@ fun BalanceCard(
     title: String,
     value: Double
 ) {
-    Card(
+    SavesCard(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Text(text = title)
-                Spacer(modifier = Modifier.size(8.dp))
-                Text(text = value.toCurrency(), style = MaterialTheme.typography.headlineMedium)
-            }
-
-            Button(
-                onClick = { /*TODO*/ },
-                shape = CircleShape,
-                contentPadding = PaddingValues(8.dp),
-                modifier = Modifier.size(48.dp)
-            ) {
-                Icon(painter = painterResource(id = SavesIcons.EyeClosed), contentDescription = null)
-            }
+            Text(text = title)
+            Spacer(modifier = Modifier.size(8.dp))
+            SavesText(text = value.toCurrency(), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 40.sp, lineHeight = 40.sp))
         }
     }
 }
 
 @Composable
 fun Actions() {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Action(
-            text = "Cash in",
-            icon = R.drawable.cash_in,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-        Action(
-            text = "Cash out",
-            icon = R.drawable.cash_out,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-        Spacer(modifier = Modifier.size(8.dp))
-        Action(
-            text = "Payment",
-            icon = R.drawable.qr_code,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
+    Column {
+        Text(text = "Ações rápidas", style = MaterialTheme.typography.titleLarge)
+        Spacer(modifier = Modifier.size(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Action(
+                text = "Registrar \nEntrada",
+                icon = R.drawable.piggybank,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Action(
+                text = "Registrar \nSaída",
+                icon = R.drawable.handcoins,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
+        }
     }
 }
 
@@ -175,18 +137,17 @@ fun Action(
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier
 ) {
-    Button(
+    SavesClickableCard(
         modifier = modifier,
-        shape = ShapeDefaults.Medium,
-        onClick = { /*TODO*/ }
+        onClick = {}
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(16.dp)
         ) {
             Icon(painter = painterResource(id = icon), contentDescription = null)
             Spacer(modifier = Modifier.size(8.dp))
-            Text(text = text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            SavesText(text = text, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -207,8 +168,8 @@ fun TransactionsHeader() {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = "Transactions", style = MaterialTheme.typography.headlineSmall.copy(fontSize = 20.sp))
-        Text(text = "See all", style = MaterialTheme.typography.titleSmall)
+        SavesText(text = "Transactions", style = MaterialTheme.typography.titleLarge)
+        SavesText(text = "See all", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
     }
 }
 
@@ -232,9 +193,10 @@ fun TransactionsList() {
                 Icon(
                     painter = painterResource(SavesIcons.User),
                     contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier
                         .clip(shape = ShapeDefaults.ExtraLarge)
-                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(8.dp)
                 )
                 Column(
@@ -242,11 +204,11 @@ fun TransactionsList() {
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text(text = transaction.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    SavesText(text = transaction.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Spacer(modifier = Modifier.size(4.dp))
-                    Text(text = transaction.date.format(), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
+                    SavesText(text = transaction.date.format(), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
                 }
-                Text(text = transaction.amount.toCurrency(), style = MaterialTheme.typography.titleMedium)
+                SavesText(text = transaction.amount.toCurrency(), style = MaterialTheme.typography.titleMedium)
             }
         }
     }

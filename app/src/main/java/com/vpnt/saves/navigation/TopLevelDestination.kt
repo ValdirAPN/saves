@@ -11,22 +11,22 @@ enum class TopLevelDestination(
 ) {
     HOME(
         selectedIcon = SavesIcons.Home,
-        unselectedIcon = SavesIcons.HomeOutlined,
+        unselectedIcon = SavesIcons.Home,
         iconTextId = R.string.home
     ),
     CARDS(
         selectedIcon = SavesIcons.Card,
-        unselectedIcon = SavesIcons.CardOutlined,
+        unselectedIcon = SavesIcons.Card,
         iconTextId = R.string.cards
     ),
     BANK_ACCOUNTS(
         selectedIcon = SavesIcons.BankAccounts,
-        unselectedIcon = SavesIcons.BankAccountsOutlined,
+        unselectedIcon = SavesIcons.BankAccounts,
         iconTextId = R.string.bank_accounts
     ),
     PROFILE(
         selectedIcon = SavesIcons.Profile,
-        unselectedIcon = SavesIcons.ProfileOutlined,
+        unselectedIcon = SavesIcons.Profile,
         iconTextId = R.string.profile
     )
 }

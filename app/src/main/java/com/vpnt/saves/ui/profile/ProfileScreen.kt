@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.vpnt.saves.ui.designsystem.components.SavesCard
+import com.vpnt.saves.ui.designsystem.components.SavesClickableCard
+import com.vpnt.saves.ui.designsystem.components.SavesText
 import com.vpnt.saves.ui.designsystem.icon.SavesIcons
 
 @Composable
@@ -42,7 +45,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.size(16.dp))
         Menu(menuItems = menuItems)
         Spacer(modifier = Modifier.size(16.dp))
-        Text(text = "Version 1.0.0")
+        SavesText(text = "Version 1.0.0")
     }
 }
 
@@ -70,7 +73,7 @@ fun Menu(menuItems: List<MenuItem>) {
 
 @Composable
 fun MenuItemContainer(menuItem: MenuItem) {
-    Card {
+    SavesClickableCard(onClick = { /*TODO*/ }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -79,7 +82,7 @@ fun MenuItemContainer(menuItem: MenuItem) {
                 .fillMaxWidth()
         ) {
             Icon(painter = painterResource(id = menuItem.icon), contentDescription = null)
-            Text(text = menuItem.text)
+            SavesText(text = menuItem.text)
         }
     }
 }

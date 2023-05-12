@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.vpnt.saves.data.model.CreditCard
 import com.vpnt.saves.extensions.format
 import com.vpnt.saves.extensions.toCurrency
+import com.vpnt.saves.ui.designsystem.components.SavesCard
+import com.vpnt.saves.ui.designsystem.components.SavesText
 
 @Composable
 fun CardsScreen(modifier: Modifier = Modifier) {
@@ -37,7 +39,7 @@ fun CardsScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun CardContainer(creditCard: CreditCard) {
-    Card(
+    SavesCard(
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -46,7 +48,7 @@ fun CardContainer(creditCard: CreditCard) {
                 .padding(16.dp)
         ) {
             Row {
-                Text(text = creditCard.title)
+                SavesText(text = creditCard.title)
             }
             Spacer(modifier = Modifier.size(16.dp))
             Row(
@@ -54,22 +56,22 @@ fun CardContainer(creditCard: CreditCard) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column {
-                    Text(text = "Available limit")
-                    Text(
+                    SavesText(text = "Available limit")
+                    SavesText(
                         text = creditCard.availableLimit.toCurrency(),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
                 Column {
-                    Text(text = "Invoice")
-                    Text(
+                    SavesText(text = "Invoice")
+                    SavesText(
                         text = creditCard.invoice.toCurrency(),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Expiration ${creditCard.expiration.format()}")
+            SavesText(text = "Expiration ${creditCard.expiration.format()}")
         }
     }
 }

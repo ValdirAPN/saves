@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vpnt.saves.data.model.BankAccount
 import com.vpnt.saves.extensions.toCurrency
+import com.vpnt.saves.ui.designsystem.components.SavesCard
+import com.vpnt.saves.ui.designsystem.components.SavesText
 
 @Composable
 fun BankAccountsScreen(modifier: Modifier = Modifier) {
@@ -41,7 +43,7 @@ fun BankAccountsScreenPreview() {
 
 @Composable
 fun BankAccountContainer(bankAccount: BankAccount) {
-    Card(
+    SavesCard(
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -50,12 +52,12 @@ fun BankAccountContainer(bankAccount: BankAccount) {
                 .padding(16.dp)
         ) {
             Row {
-                Text(text = bankAccount.name)
+                SavesText(text = bankAccount.name)
             }
             Spacer(modifier = Modifier.size(8.dp))
             Column {
-                Text(text = "Balance")
-                Text(text = bankAccount.balance.toCurrency())
+                SavesText(text = "Balance")
+                SavesText(text = bankAccount.balance.toCurrency())
             }
         }
     }
