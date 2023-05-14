@@ -13,4 +13,6 @@ object SavesIcons {
     val Messages = R.drawable.messages
     val Logout = R.drawable.logout
     val Plus = R.drawable.plus
+    val Coins = R.drawable.coins
+    val ReceiptX = R.drawable.receiptx
 }

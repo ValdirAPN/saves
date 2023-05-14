@@ -215,11 +215,13 @@ fun BalanceOverview(
     ) {
         BalanceCard(
             title = "Saldo",
+            icon = SavesIcons.Coins,
             value = balance
         )
         Spacer(modifier = Modifier.size(8.dp))
         BalanceCard(
             title = "Despesas do mês",
+            icon = SavesIcons.ReceiptX,
             value = monthExpenses
         )
     }
@@ -228,6 +230,7 @@ fun BalanceOverview(
 @Composable
 fun BalanceCard(
     title: String,
+    @DrawableRes icon: Int,
     value: Double
 ) {
     SavesCard(
@@ -239,7 +242,13 @@ fun BalanceCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = title)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(painter = painterResource(id = icon), contentDescription = "")
+                Text(text = title)
+            }
             Spacer(modifier = Modifier.size(8.dp))
             SavesText(
                 text = value.toCurrency(),
@@ -346,10 +355,10 @@ fun TransactionsList(transactions: List<Transaction>) {
                 Icon(
                     painter = painterResource(SavesIcons.User),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
-                        .clip(shape = ShapeDefaults.ExtraLarge)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .clip(shape = ShapeDefaults.Medium)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(8.dp)
                 )
                 Column(
