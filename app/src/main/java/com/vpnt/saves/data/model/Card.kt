@@ -4,7 +4,7 @@ import java.util.Date
 
 data class CreditCard(
     val id: String,
-    val title: String,
+    val name: String,
     val availableLimit: Double,
     val invoice: Double,
     val expiration: Date
@@ -13,28 +13,28 @@ data class CreditCard(
         fun fakeList() = listOf(
             CreditCard(
                 id = "1",
-                title = "Nubank",
+                name = "Nubank",
                 availableLimit = 3000.00,
                 invoice = 2599.00,
                 expiration = Date()
             ),
             CreditCard(
                 id = "2",
-                title = "Nubank",
+                name = "Nubank",
                 availableLimit = 3000.00,
                 invoice = 2599.00,
                 expiration = Date()
             ),
             CreditCard(
                 id = "3",
-                title = "Nubank",
+                name = "Nubank",
                 availableLimit = 3000.00,
                 invoice = 2599.00,
                 expiration = Date()
             ),
             CreditCard(
                 id = "4",
-                title = "Nubank",
+                name = "Nubank",
                 availableLimit = 3000.00,
                 invoice = 2599.00,
                 expiration = Date()

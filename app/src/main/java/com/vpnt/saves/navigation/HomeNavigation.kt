@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.vpnt.saves.ui.home.HomeScreen
+import com.vpnt.saves.ui.home.HomeRoute
 
 const val homeRoute = "home_route"
 
@@ -14,6 +14,6 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.homeScreen() {
     composable(route = homeRoute) {
-        HomeScreen()
+        HomeRoute()
     }
 }
