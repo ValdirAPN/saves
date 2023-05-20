@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.vpnt.saves.ui.bankaccounts.BankAccountsScreen
+import com.vpnt.saves.ui.bankaccounts.BankAccountsRoute
 
 const val bankAccountsRoute = "bank_accounts_route"
 
@@ -14,6 +14,6 @@ fun NavController.navigateToBankAccounts(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.bankAccountsScreen() {
     composable(route = bankAccountsRoute) {
-        BankAccountsScreen()
+        BankAccountsRoute()
     }
 }

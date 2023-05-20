@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.vpnt.saves.ui.cards.CardsRoute
-import com.vpnt.saves.ui.cards.CardsScreen
 
 const val cardsRoute = "cards_route"
 
