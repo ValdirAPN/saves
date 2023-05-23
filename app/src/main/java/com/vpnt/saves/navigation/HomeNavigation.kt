@@ -9,7 +9,9 @@ import com.vpnt.saves.ui.home.HomeRoute
 const val homeRoute = "home_route"
 
 fun NavController.navigateToHome(navOptions: NavOptions? = null) {
-    this.navigate(homeRoute, navOptions)
+    if (this.currentDestination?.route != homeRoute) {
+        this.navigate(homeRoute, navOptions)
+    }
 }
 
 fun NavGraphBuilder.homeScreen() {

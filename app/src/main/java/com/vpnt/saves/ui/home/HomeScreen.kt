@@ -1,5 +1,6 @@
 package com.vpnt.saves.ui.home
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,13 +47,17 @@ import com.vpnt.saves.ui.designsystem.components.SavesText
 import com.vpnt.saves.ui.designsystem.icon.SavesIcons
 import com.vpnt.saves.ui.designsystem.theme.SavesTheme
 
+private const val TAG = "HomeRoute"
+
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val homeUiState: HomeUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val homeUiState: HomeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    Log.d(TAG, "HomeRoute")
 
     HomeScreen(
         uiState = homeUiState,
@@ -66,6 +70,8 @@ fun HomeScreen(
     uiState: HomeUiState,
     modifier: Modifier = Modifier
 ) {
+    Log.d(TAG, "HomeScreen recomposed")
+
     var showCashInBottomSheet by remember { mutableStateOf(false) }
     var showCashOutBottomSheet by remember { mutableStateOf(false) }
 
@@ -104,7 +110,6 @@ fun HomeScreen(
 
                 if (showCashOutBottomSheet) {
                     CashOutBottomSheet(onDismissRequest = { showCashOutBottomSheet = false })
-
                 }
             }
 

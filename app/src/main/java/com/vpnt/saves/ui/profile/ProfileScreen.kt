@@ -25,15 +25,19 @@ import com.vpnt.saves.ui.designsystem.components.SavesText
 import com.vpnt.saves.ui.designsystem.icon.SavesIcons
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+) {
     val menuItems = listOf(
         MenuItem(
             text = "Get in touch",
-            icon = SavesIcons.Messages
+            icon = SavesIcons.Messages,
+            onClick = {}
         ),
         MenuItem(
             text = "Logout",
-            icon = SavesIcons.Logout
+            icon = SavesIcons.Logout,
+            onClick = { }
         )
     )
     Column(
@@ -73,7 +77,7 @@ fun Menu(menuItems: List<MenuItem>) {
 
 @Composable
 fun MenuItemContainer(menuItem: MenuItem) {
-    SavesClickableCard(onClick = { /*TODO*/ }) {
+    SavesClickableCard(onClick = { menuItem.onClick() }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -90,4 +94,5 @@ fun MenuItemContainer(menuItem: MenuItem) {
 data class MenuItem(
     val text: String,
     @DrawableRes val icon: Int,
+    val onClick: () -> Unit
 )

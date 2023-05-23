@@ -4,4 +4,7 @@
     <string name="profile">Profile</string>
     <string name="cards">Cards</string>
     <string name="bank_accounts">Accounts</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">C0ch8xKbOFG0aJEgnVeXCLM6lVMgmpmqENDaoyky</string>
+    <string name="back4app_client_key">VHNZEVx5Aaqx7yaTAmacnWer7dl2einzZk5tpT0w</string>
 </resources>

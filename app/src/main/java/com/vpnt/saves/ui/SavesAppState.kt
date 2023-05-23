@@ -17,11 +17,13 @@ import com.vpnt.saves.navigation.navigateToCards
 import com.vpnt.saves.navigation.navigateToHome
 import com.vpnt.saves.navigation.navigateToProfile
 import com.vpnt.saves.navigation.profileRoute
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun rememberSavesAppState(
     navController: NavHostController = rememberNavController()
 ): SavesAppState {
+
     return remember(navController) {
         SavesAppState(
             navController = navController
@@ -32,6 +34,7 @@ fun rememberSavesAppState(
 class SavesAppState(
     val navController: NavHostController
 ) {
+
     val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
@@ -62,11 +65,11 @@ class SavesAppState(
             restoreState = true
         }
 
-        when (topLevelDestination) {
-            TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
-            TopLevelDestination.CARDS -> navController.navigateToCards(topLevelNavOptions)
-            TopLevelDestination.BANK_ACCOUNTS -> navController.navigateToBankAccounts(topLevelNavOptions)
-            TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
-        }
+//        when (topLevelDestination) {
+//            TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
+//            TopLevelDestination.CARDS -> navController.navigateToCards(topLevelNavOptions)
+//            TopLevelDestination.BANK_ACCOUNTS -> navController.navigateToBankAccounts(topLevelNavOptions)
+//            TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
+//        }
     }
 }
