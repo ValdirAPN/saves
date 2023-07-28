@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "br.com.saves"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "br.com.saves"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
