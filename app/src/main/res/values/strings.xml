@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Saves</string>
+    <string name="not_connected">⚠️ Você não tem uma conexão com a internet</string>
 </resources>
