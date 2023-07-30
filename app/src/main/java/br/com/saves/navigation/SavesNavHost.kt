@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import br.com.saves.SavesAppState
+import br.com.saves.feature.authentication.authenticationNavigationRoute
+import br.com.saves.feature.authentication.authenticationScreen
 import br.com.saves.feature.home.homeNavigationRoute
 import br.com.saves.feature.home.homeScreen
 
@@ -11,7 +13,7 @@ import br.com.saves.feature.home.homeScreen
 fun SavesNavHost(
     modifier: Modifier = Modifier,
     appState: SavesAppState,
-    startDestination: String = homeNavigationRoute
+    startDestination: String = authenticationNavigationRoute
 ) {
     val navController = appState.navController
     NavHost(
@@ -19,6 +21,7 @@ fun SavesNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        authenticationScreen()
         homeScreen()
     }
 }

@@ -20,11 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import br.com.saves.data.util.NetworkMonitor
+import br.com.saves.feature.authentication.authenticationNavigationRoute
+import br.com.saves.feature.home.homeNavigationRoute
 import br.com.saves.navigation.SavesNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavesApp(
+    isAuthenticated: Boolean,
     networkMonitor: NetworkMonitor,
     appState: SavesAppState = rememberSavesAppState(networkMonitor = networkMonitor)
 ) {
@@ -54,7 +57,8 @@ fun SavesApp(
         ) {
             Column(Modifier.fillMaxSize()) {
                 SavesNavHost(
-                    appState = appState
+                    appState = appState,
+                    startDestination = if (isAuthenticated) homeNavigationRoute else authenticationNavigationRoute
                 )
             }
         }
