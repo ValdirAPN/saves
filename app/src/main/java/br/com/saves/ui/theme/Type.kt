@@ -59,7 +59,7 @@ val Typography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = outfitFontFamily,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
@@ -95,8 +95,8 @@ val Typography = Typography(
     bodySmall = TextStyle(
         fontFamily = outfitFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
+        fontSize = 11.sp,
+        lineHeight = 14.sp,
         letterSpacing = 0.4.sp,
     ),
     labelLarge = TextStyle(
