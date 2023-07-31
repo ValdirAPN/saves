@@ -5,10 +5,15 @@
     <string name="btn_expense_label">Registrar despesa</string>
     <string name="accounts">Contas</string>
     <string name="see_more">Ver mais</string>
-    <string name="btn_add_account_label">Adicionar conta</string>
     <string name="your_balance">Seu saldo</string>
     <string name="cards">Cartões</string>
-    <string name="btn_add_card_label">Adicionar cartão</string>
+    <string name="add_account">Adicionar conta</string>
+    <string name="add_card">Adicionar cartão</string>
     <string name="logout">Sair</string>
     <string name="greetings">Bem vindo(a),</string>
+    <string name="account_name">Nome da conta</string>
+    <string name="balance">Saldo</string>
+    <string name="add">Adicionar</string>
+    <string name="due_day">Vencimento</string>
+    <string name="limit">Limite</string>
 </resources>

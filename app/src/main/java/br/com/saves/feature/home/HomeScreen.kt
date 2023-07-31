@@ -13,6 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,6 +46,9 @@ fun HomeScreen(
         }
 
         is HomeUiState.Success -> {
+            var showAccountBottomSheet by remember { mutableStateOf(false) }
+            var showCardBottomSheet by remember { mutableStateOf(false) }
+
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
@@ -77,9 +83,29 @@ fun HomeScreen(
                         }
                         TransactionsContainer(transactions = Transaction.fakeList())
                     }
-                    AccountsContainer(accounts = Account.fakeList())
-                    CardsContainer(cards = Card.fakeList())
+                    AccountsContainer(
+                        accounts = Account.fakeList(),
+                        onClickAddNewAccount = { showAccountBottomSheet = true }
+                    )
+                    CardsContainer(
+                        cards = Card.fakeList(),
+                        onClickAddNewCard = { showCardBottomSheet = true }
+                    )
                     Spacer(modifier = Modifier.size(8.dp))
+
+                    if (showAccountBottomSheet) {
+                        NewAccountForm(
+                            onDismissRequest = { showAccountBottomSheet = false },
+                            onCreateAccount = {}
+                        )
+                    }
+
+                    if (showCardBottomSheet) {
+                        NewCardForm(
+                            onDismissRequest = { showCardBottomSheet = false },
+                            onCreateCard = {}
+                        )
+                    }
                 }
             }
         }
