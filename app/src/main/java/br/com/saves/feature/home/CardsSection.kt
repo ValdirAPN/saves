@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.saves.R
-import br.com.saves.model.Card
+import br.com.saves.model.CreditCard
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.theme.SavesTheme
@@ -46,7 +46,7 @@ import br.com.saves.utils.toCurrency
 
 @Composable
 fun CardsContainer(
-    cards: List<Card>,
+    creditCards: List<CreditCard>,
     onClickAddNewCard: () -> Unit
 ) {
     Column(
@@ -70,19 +70,19 @@ fun CardsContainer(
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            for (i in cards.indices step 2) {
+            for (i in creditCards.indices step 2) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     CardContainer(
-                        card = cards[i],
+                        creditCard = creditCards[i],
                         onClick = { /*TODO*/ },
                         icon = R.drawable.wallet,
                         modifier = Modifier.weight(1f)
                     )
-                    if ((i + 1) < cards.size) {
+                    if ((i + 1) < creditCards.size) {
                         CardContainer(
-                            card = cards[i + 1],
+                            creditCard = creditCards[i + 1],
                             onClick = { /*TODO*/ },
                             icon = R.drawable.wallet,
                             modifier = Modifier.weight(1f)
@@ -93,7 +93,7 @@ fun CardsContainer(
                 }
             }
 
-            if (cards.size % 2 == 0) {
+            if (creditCards.size % 2 == 0) {
                 Row {
                     NewCardButton(onClick = onClickAddNewCard, modifier = Modifier.weight(1f))
                 }
@@ -145,7 +145,7 @@ fun CardsContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                CardsContainer(Card.fakeList(), {})
+                CardsContainer(CreditCard.fakeList(), {})
             }
         }
     }
@@ -153,7 +153,7 @@ fun CardsContainerPreview() {
 
 @Composable
 fun CardContainer(
-    card: Card,
+    creditCard: CreditCard,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
@@ -186,13 +186,13 @@ fun CardContainer(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = card.name,
+                    text = creditCard.name,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = card.limit.toCurrency(),
+                    text = creditCard.limit.toCurrency(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -209,7 +209,7 @@ fun CardContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             CardContainer(
-                card = Card("", "Nubank", 0.0),
+                creditCard = CreditCard("", "Nubank", 0.0),
                 onClick = {},
                 modifier = Modifier,
                 icon = R.drawable.wallet
@@ -221,7 +221,7 @@ fun CardContainerPreview() {
 @Composable
 fun NewCardForm(
     onDismissRequest: () -> Unit,
-    onCreateCard: (Card) -> Unit
+    onCreateCard: (CreditCard) -> Unit
 ) {
 
     var name by remember { mutableStateOf("") }

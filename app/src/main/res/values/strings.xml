@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Saves</string>
     <string name="not_connected">⚠️ Você não tem uma conexão com a internet</string>
-    <string name="btn_income_label">Registrar receita</string>
-    <string name="btn_expense_label">Registrar despesa</string>
+    <string name="register_income">Registrar receita</string>
+    <string name="register_expense">Registrar despesa</string>
     <string name="accounts">Contas</string>
     <string name="see_more">Ver mais</string>
     <string name="your_balance">Seu saldo</string>
@@ -16,4 +16,13 @@
     <string name="add">Adicionar</string>
     <string name="due_day">Vencimento</string>
     <string name="limit">Limite</string>
+    <string name="back">Voltar</string>
+    <string name="title">Título</string>
+    <string name="value">Valor</string>
+    <string name="account">Conta</string>
+    <string name="origin">Origem</string>
+    <string name="date">Data</string>
+    <string name="register">Registrar</string>
+    <string name="establishment">Estabelecimento</string>
+    <string name="installments">Parcelas</string>
 </resources>

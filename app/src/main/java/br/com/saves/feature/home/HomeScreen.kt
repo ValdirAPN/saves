@@ -23,21 +23,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
 import br.com.saves.model.Account
-import br.com.saves.model.Card
+import br.com.saves.model.CreditCard
 import br.com.saves.model.Transaction
 
 @Composable
 fun HomeRoute(
+    navigateToIncome: () -> Unit,
+    navigateToExpense: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState: HomeUiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
+        navigateToIncome = navigateToIncome,
+        navigateToExpense = navigateToExpense,
         uiState = uiState
     )
 }
 
 @Composable
 fun HomeScreen(
+    navigateToIncome: () -> Unit,
+    navigateToExpense: () -> Unit,
     uiState: HomeUiState
 ) {
     when (uiState) {
@@ -67,17 +73,21 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
-                                onClick = {},
+                                onClick = {
+                                    navigateToIncome()
+                                },
                                 icon = R.drawable.currency_circle_dollar,
-                                label = stringResource(id = R.string.btn_income_label)
+                                label = stringResource(id = R.string.register_income)
                             )
                             Action(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(1f),
-                                onClick = {},
+                                onClick = {
+                                    navigateToExpense()
+                                },
                                 icon = R.drawable.receipt,
-                                label = stringResource(id = R.string.btn_expense_label),
+                                label = stringResource(id = R.string.register_expense),
                                 containerColor = MaterialTheme.colorScheme.error
                             )
                         }
@@ -88,7 +98,7 @@ fun HomeScreen(
                         onClickAddNewAccount = { showAccountBottomSheet = true }
                     )
                     CardsContainer(
-                        cards = Card.fakeList(),
+                        creditCards = CreditCard.fakeList(),
                         onClickAddNewCard = { showCardBottomSheet = true }
                     )
                     Spacer(modifier = Modifier.size(8.dp))

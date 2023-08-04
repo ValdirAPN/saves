@@ -70,7 +70,7 @@ fun ActionPreview() {
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {},
                 icon = R.drawable.currency_circle_dollar,
-                label = stringResource(id = R.string.btn_income_label),
+                label = stringResource(id = R.string.register_income),
                 containerColor = MaterialTheme.colorScheme.primary
             )
         }
