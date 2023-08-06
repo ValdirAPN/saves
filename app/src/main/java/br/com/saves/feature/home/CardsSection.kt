@@ -42,12 +42,15 @@ import br.com.saves.model.CreditCard
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.theme.SavesTheme
+import br.com.saves.utils.MONETARY_NUMBER_MAX_LENGTH
+import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.toCurrency
+import java.util.UUID
 
 @Composable
 fun CardsContainer(
     creditCards: List<CreditCard>,
-    onClickAddNewCard: () -> Unit
+    onClickAddNewCard: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -192,7 +195,7 @@ fun CardContainer(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = creditCard.limit.toCurrency(),
+                    text = creditCard.availableLimit.toCurrency(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -209,7 +212,7 @@ fun CardContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             CardContainer(
-                creditCard = CreditCard("", "Nubank", 0.0),
+                creditCard = CreditCard("", "Nubank", 0.0, 0.0),
                 onClick = {},
                 modifier = Modifier,
                 icon = R.drawable.wallet
@@ -253,7 +256,12 @@ fun NewCardForm(
             Spacer(modifier = Modifier.size(16.dp))
             SavesTextField(
                 value = limit,
-                onValueChange = { limit = it },
+                onValueChange = {
+                    if (it.length <= MONETARY_NUMBER_MAX_LENGTH) {
+                        limit = it
+                    }
+                },
+                visualTransformation = NumberVisualTransformation(),
                 placeholder = { Text(stringResource(id = R.string.limit)) },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -265,59 +273,21 @@ fun NewCardForm(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(24.dp))
-            SavesButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+            SavesButton(
+                onClick = {
+                    val card = CreditCard(
+                        id = UUID.randomUUID().toString(),
+                        name = name,
+                        limit = limit.toDouble() / 100,
+                        availableLimit = limit.toDouble() / 100
+                    )
+                    onCreateCard(card)
+                    onDismissRequest()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(text = stringResource(id = R.string.add))
             }
         }
     }
-
-//    ModalBottomSheet(
-//        sheetState = SheetState(skipPartiallyExpanded = true),
-//        onDismissRequest = { onDismissRequest() },
-//        containerColor = MaterialTheme.colorScheme.background
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .verticalScroll(rememberScrollState())
-//                .imePadding()
-//                .imeNestedScroll()
-//                .padding(horizontal = 16.dp)
-//                .padding(bottom = 16.dp),
-//        ) {
-//            Text(
-//                modifier = Modifier.fillMaxWidth(),
-//                text = stringResource(id = R.string.add_card),
-//                style = MaterialTheme.typography.bodyLarge,
-//                color = MaterialTheme.colorScheme.onBackground,
-//                textAlign = TextAlign.Center
-//            )
-//            Spacer(modifier = Modifier.size(24.dp))
-//            SavesTextField(
-//                value = name,
-//                onValueChange = { name = it },
-//                placeholder = { Text(stringResource(id = R.string.account_name)) },
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//            Spacer(modifier = Modifier.size(16.dp))
-//            SavesTextField(
-//                value = limit,
-//                onValueChange = { limit = it },
-//                placeholder = { Text(stringResource(id = R.string.limit)) },
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//            Spacer(modifier = Modifier.size(16.dp))
-//            SavesTextField(
-//                value = dueDay,
-//                onValueChange = { dueDay = it },
-//                placeholder = { Text(stringResource(id = R.string.due_day)) },
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//            Spacer(modifier = Modifier.size(24.dp))
-//            SavesButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-//                Text(text = stringResource(id = R.string.add))
-//            }
-//            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
-//        }
-//    }
 }

@@ -18,7 +18,7 @@ import br.com.saves.ui.theme.SavesTheme
 import br.com.saves.utils.toCurrency
 
 @Composable
-fun BalanceOverview(modifier: Modifier = Modifier) {
+fun BalanceOverview(modifier: Modifier = Modifier, balance: Double) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
@@ -30,7 +30,7 @@ fun BalanceOverview(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(stringResource(id = R.string.your_balance), color = MaterialTheme.colorScheme.onSurface)
-            Text(628.79.toCurrency(), style = MaterialTheme.typography.headlineLarge)
+            Text(balance.toCurrency(), style = MaterialTheme.typography.headlineLarge)
         }
     }
 }
@@ -43,7 +43,7 @@ fun BalanceOverviewPreview() {
             Surface(
                 color = MaterialTheme.colorScheme.background
             ) {
-                BalanceOverview()
+                BalanceOverview(balance = 628.79)
             }
         }
     }

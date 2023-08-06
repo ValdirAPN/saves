@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,15 +38,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.saves.R
-import br.com.saves.model.Account
+import br.com.saves.model.BankAccount
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.theme.SavesTheme
+import br.com.saves.utils.MONETARY_NUMBER_MAX_LENGTH
+import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.toCurrency
+import java.util.UUID
 
 @Composable
 fun AccountsContainer(
-    accounts: List<Account>,
+    bankAccounts: List<BankAccount>,
     onClickAddNewAccount: () -> Unit
 ) {
     Column(
@@ -71,30 +73,33 @@ fun AccountsContainer(
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            for (i in accounts.indices step 2) {
+            for (i in bankAccounts.indices step 2) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     AccountContainer(
-                        account = accounts[i],
+                        bankAccount = bankAccounts[i],
                         onClick = { /*TODO*/ },
                         icon = R.drawable.wallet,
                         modifier = Modifier.weight(1f)
                     )
-                    if ((i + 1) < accounts.size) {
+                    if ((i + 1) < bankAccounts.size) {
                         AccountContainer(
-                            account = accounts[i + 1],
+                            bankAccount = bankAccounts[i + 1],
                             onClick = { /*TODO*/ },
                             icon = R.drawable.wallet,
                             modifier = Modifier.weight(1f)
                         )
                     } else {
-                        NewAccountButton(onClick = onClickAddNewAccount, modifier = Modifier.weight(1f))
+                        NewAccountButton(
+                            onClick = onClickAddNewAccount,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
                 }
             }
 
-            if (accounts.size % 2 == 0) {
+            if (bankAccounts.size % 2 == 0) {
                 Row {
                     NewAccountButton(onClick = onClickAddNewAccount, modifier = Modifier.weight(1f))
                 }
@@ -146,7 +151,7 @@ fun AccountsContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                AccountsContainer(Account.fakeList(), {})
+                AccountsContainer(BankAccount.fakeList(), {})
             }
         }
     }
@@ -154,7 +159,7 @@ fun AccountsContainerPreview() {
 
 @Composable
 fun AccountContainer(
-    account: Account,
+    bankAccount: BankAccount,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
@@ -187,13 +192,13 @@ fun AccountContainer(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = account.name,
+                    text = bankAccount.name,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = account.balance.toCurrency(),
+                    text = bankAccount.balance.toCurrency(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -210,7 +215,7 @@ fun AccountContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             AccountContainer(
-                account = Account("", "Carteira", 0.0),
+                bankAccount = BankAccount("", "Carteira", 0.0),
                 onClick = {},
                 modifier = Modifier,
                 icon = R.drawable.wallet
@@ -222,7 +227,7 @@ fun AccountContainerPreview() {
 @Composable
 fun NewAccountForm(
     onDismissRequest: () -> Unit,
-    onCreateAccount: (Account) -> Unit
+    onCreateBankAccount: (BankAccount) -> Unit
 ) {
 
     var name by remember { mutableStateOf("") }
@@ -247,18 +252,31 @@ fun NewAccountForm(
             SavesTextField(
                 value = name,
                 onValueChange = { name = it },
-                placeholder = { Text(stringResource(id = R.string.account_name)) },
+                placeholder = { Text(text = stringResource(id = R.string.account_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(16.dp))
             SavesTextField(
                 value = balance,
-                onValueChange = { balance = it },
-                placeholder = { Text(stringResource(id = R.string.balance)) },
+                onValueChange = {
+                    if (it.length <= MONETARY_NUMBER_MAX_LENGTH) {
+                        balance = it
+                    }
+                },
+                visualTransformation = NumberVisualTransformation(),
+                placeholder = { Text(text = stringResource(id = R.string.balance)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(24.dp))
-            SavesButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+            SavesButton(onClick = {
+                val bankAccount = BankAccount(
+                    id = UUID.randomUUID().toString(),
+                    name = name,
+                    balance = balance.toDouble() / 100,
+                )
+                onCreateBankAccount(bankAccount)
+                onDismissRequest()
+            }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = stringResource(id = R.string.add))
             }
         }

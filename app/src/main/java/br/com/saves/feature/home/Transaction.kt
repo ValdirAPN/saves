@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.saves.R
@@ -26,6 +28,7 @@ import br.com.saves.ui.theme.SavesTheme
 import br.com.saves.utils.formatDate
 import br.com.saves.utils.toCurrency
 import java.util.Date
+import java.util.UUID
 
 
 @Composable
@@ -47,11 +50,25 @@ fun TransactionsContainer(modifier: Modifier = Modifier, transactions: List<Tran
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
-            Text(text = "Ver mais", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
+            Text(
+                text = "Ver mais",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            if (transactions.isEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.not_transactions_found),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             transactions.forEach { transaction ->
                 TransactionContainer(transaction = transaction)
             }
@@ -69,6 +86,21 @@ fun TransactionsContainerPreview() {
             TransactionsContainer(
                 modifier = Modifier,
                 transactions = Transaction.fakeList()
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TransactionsContainerWithNoTransactionsPreview() {
+    SavesTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            TransactionsContainer(
+                modifier = Modifier,
+                transactions = emptyList()
             )
         }
     }
@@ -97,14 +129,14 @@ fun TransactionContainer(modifier: Modifier = Modifier, transaction: Transaction
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = transaction.title)
+            Text(text = transaction.description)
             Text(
                 text = transaction.date.formatDate(),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        Text(text = transaction.value.toCurrency(), color = valueColor)
+        Text(text = transaction.amount.toCurrency(), color = valueColor)
     }
 }
 
@@ -117,9 +149,11 @@ fun TransactionContainerPreview() {
         ) {
             TransactionContainer(
                 transaction = Transaction(
-                    title = "Cinema",
+                    id = UUID.randomUUID().toString(),
+                    description = "Cinema",
                     date = Date(),
-                    value = 56.70,
+                    amount = 56.70,
+                    installments = 1,
                     type = TransactionType.INCOME
                 )
             )

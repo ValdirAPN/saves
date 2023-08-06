@@ -17,7 +17,7 @@
     <string name="due_day">Vencimento</string>
     <string name="limit">Limite</string>
     <string name="back">Voltar</string>
-    <string name="title">Título</string>
+    <string name="description">Descrição</string>
     <string name="value">Valor</string>
     <string name="account">Conta</string>
     <string name="origin">Origem</string>
@@ -25,4 +25,9 @@
     <string name="register">Registrar</string>
     <string name="establishment">Estabelecimento</string>
     <string name="installments">Parcelas</string>
+    <string name="not_transactions_found">Nenhuma transação encontrada.</string>
+    <string name="transaction_created_successfully">Transação criada com sucesso!</string>
+    <string name="ok">Ok</string>
+    <string name="card">Cartão de crédito</string>
+    <string name="number_of_installments">Quantidade de parcelas</string>
 </resources>

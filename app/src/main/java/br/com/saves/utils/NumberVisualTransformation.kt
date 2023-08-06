@@ -22,3 +22,5 @@ class NumberVisualTransformation : VisualTransformation {
         )
     }
 }
+
+const val MONETARY_NUMBER_MAX_LENGTH = 16

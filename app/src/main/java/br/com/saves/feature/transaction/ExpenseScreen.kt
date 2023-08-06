@@ -23,101 +23,174 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
+import br.com.saves.model.Transaction
+import br.com.saves.model.TransactionType
 import br.com.saves.ui.composables.DatePickerField
 import br.com.saves.ui.composables.Dropdown
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.composables.SavesTopBar
 import br.com.saves.ui.theme.SavesTheme
+import br.com.saves.utils.MONETARY_NUMBER_MAX_LENGTH
 import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.getDateString
+import java.util.Date
+import java.util.UUID
 
 @Composable
-fun ExpenseRoute(onBackPressed: () -> Unit) {
-    ExpenseScreen(onBackPressed = onBackPressed)
+fun ExpenseRoute(
+    onBackPressed: () -> Unit,
+    viewModel: TransactionViewModel = hiltViewModel(),
+) {
+    val uiState: TransactionUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ExpenseScreen(
+        onBackPressed = onBackPressed,
+        onCreateTransaction = viewModel::createTransaction,
+        uiState = uiState
+    )
 }
 
 @Composable
-fun ExpenseScreen(onBackPressed: () -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var value by remember { mutableStateOf("") }
-    var source by remember { mutableStateOf("card") }
-    var establishment by remember { mutableStateOf("") }
-    var installments by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
+fun ExpenseScreen(
+    onBackPressed: () -> Unit,
+    onCreateTransaction: (Transaction) -> Unit,
+    uiState: TransactionUiState
+) {
+    when (uiState) {
+        is TransactionUiState.Loading -> {}
+        is TransactionUiState.Success -> {
+            var description by remember { mutableStateOf("") }
+            var amount by remember { mutableStateOf("") }
+            var source by remember { mutableStateOf("card") }
+            var installments by remember { mutableStateOf("") }
+            var date by remember { mutableStateOf("") }
+            var accountId by remember { mutableStateOf("") }
+            var creditCardId by remember { mutableStateOf("") }
 
-    Column {
-        SavesTopBar(
-            title = stringResource(id = R.string.register_expense),
-            showBackButton = true,
-            onBackPressed = onBackPressed
-        )
+            var showSuccessDialog by remember { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                SavesTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = name,
-                    onValueChange = { name = it },
-                    placeholder = { Text(stringResource(id = R.string.title)) })
-
-                SavesTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = value,
-                    onValueChange = {
-                        if (it.length <= 16) {
-                            value = it
-                        }
-                    },
-                    visualTransformation = NumberVisualTransformation(),
-                    placeholder = { Text(stringResource(id = R.string.value)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
-                )
-                SourceSelection(selected = source, onClick = { source = it })
-                if (source == "card") {
-                    Dropdown(
-                        placeholder = { Text("Installments") },
-                        notSetLabel = "Number of installments",
-                        items = (1..24).toList(),
-                        selectedItem = if (installments.isNotEmpty()) installments.toInt() else null,
-                        onItemSelected = { _, item ->
-                            installments = item.toString()
-                        }
-                    )
+            if (showSuccessDialog) {
+                CreateTransactionSuccessDialog {
+                    showSuccessDialog = false
+                    onBackPressed()
                 }
-                SavesTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = establishment,
-                    onValueChange = { establishment = it },
-                    placeholder = { Text(stringResource(id = R.string.establishment)) })
+            }
 
-                DatePickerField(
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(text = "Date") },
-                    selectedDate = if (date.isNotBlank()) date.toLong().getDateString() else null
-                ) { dateInMillis ->
-                    Log.d("TAG", "CashInBottomSheet: $dateInMillis")
-                    dateInMillis?.let {
-                        date = it.toString()
+            Column {
+                SavesTopBar(
+                    title = stringResource(id = R.string.register_expense),
+                    showBackButton = true,
+                    onBackPressed = onBackPressed
+                )
+
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        SavesTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = description,
+                            onValueChange = { description = it },
+                            placeholder = { Text(stringResource(id = R.string.description)) })
+
+                        SavesTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = amount,
+                            onValueChange = {
+                                if (it.length <= MONETARY_NUMBER_MAX_LENGTH) {
+                                    amount = it
+                                }
+                            },
+                            visualTransformation = NumberVisualTransformation(),
+                            placeholder = { Text(stringResource(id = R.string.value)) },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+                        )
+                        SourceSelection(
+                            selected = source,
+                            onClick = {
+                                source = it
+                                installments = ""
+                                accountId = ""
+                                creditCardId = ""
+                            }
+                        )
+
+                        if (source == "card") {
+                            Dropdown(
+                                placeholder = { Text(stringResource(id = R.string.card)) },
+                                notSetLabel = stringResource(id = R.string.card),
+                                items = uiState.creditCards,
+                                itemToString = { it.name },
+                                selectedItem = if (creditCardId.isNotEmpty()) uiState.creditCards.find { it.id == creditCardId } else null,
+                                onItemSelected = { _, item ->
+                                    creditCardId = item.id
+                                }
+                            )
+                            Dropdown(
+                                placeholder = { Text(stringResource(id = R.string.installments)) },
+                                notSetLabel = stringResource(id = R.string.number_of_installments),
+                                items = (1..24).toList(),
+                                selectedItem = if (installments.isNotEmpty()) installments.toInt() else null,
+                                onItemSelected = { _, item ->
+                                    installments = item.toString()
+                                }
+                            )
+                        } else {
+                            Dropdown(
+                                placeholder = { Text(stringResource(id = R.string.account)) },
+                                notSetLabel = stringResource(id = R.string.account),
+                                items = uiState.bankAccounts,
+                                itemToString = { it.name },
+                                selectedItem = if (accountId.isNotEmpty()) uiState.bankAccounts.find { it.id == accountId } else null,
+                                onItemSelected = { _, item ->
+                                    accountId = item.id
+                                }
+                            )
+                        }
+
+                        DatePickerField(
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text(text = "Date") },
+                            selectedDate = if (date.isNotBlank()) date.toLong()
+                                .getDateString() else null
+                        ) { dateInMillis ->
+                            Log.d("TAG", "CashInBottomSheet: $dateInMillis")
+                            dateInMillis?.let {
+                                date = it.toString()
+                            }
+                        }
+                    }
+
+                    SavesButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            val transaction = Transaction(
+                                id = UUID.randomUUID().toString(),
+                                description = description,
+                                date = Date(date.toLong()),
+                                amount = amount.toDouble() / 100,
+                                installments = if (source == "card") installments.toInt() else 1,
+                                type = TransactionType.EXPENSE,
+                                bankAccountId = accountId.ifEmpty { null },
+                                creditCardId = creditCardId.ifEmpty { null }
+                            )
+                            onCreateTransaction(transaction)
+                            showSuccessDialog = true
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.register))
                     }
                 }
-            }
 
-            SavesButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { /*TODO*/ }
-            ) {
-                Text(text = stringResource(id = R.string.register))
+                Spacer(modifier = Modifier.size(24.dp))
             }
         }
-
-        Spacer(modifier = Modifier.size(24.dp))
     }
 }
 

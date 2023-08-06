@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
-import br.com.saves.model.Account
+import br.com.saves.model.BankAccount
 import br.com.saves.model.CreditCard
 import br.com.saves.model.Transaction
 
@@ -36,6 +36,8 @@ fun HomeRoute(
     HomeScreen(
         navigateToIncome = navigateToIncome,
         navigateToExpense = navigateToExpense,
+        onCreateCard = viewModel::createCreditCard,
+        onCreateBankAccount = viewModel::createBankAccount,
         uiState = uiState
     )
 }
@@ -44,6 +46,8 @@ fun HomeRoute(
 fun HomeScreen(
     navigateToIncome: () -> Unit,
     navigateToExpense: () -> Unit,
+    onCreateCard: (CreditCard) -> Unit,
+    onCreateBankAccount: (BankAccount) -> Unit,
     uiState: HomeUiState
 ) {
     when (uiState) {
@@ -67,7 +71,10 @@ fun HomeScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        BalanceOverview(modifier = Modifier.fillMaxWidth())
+                        BalanceOverview(
+                            modifier = Modifier.fillMaxWidth(),
+                            balance = uiState.balance
+                        )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Action(
                                 modifier = Modifier
@@ -91,14 +98,14 @@ fun HomeScreen(
                                 containerColor = MaterialTheme.colorScheme.error
                             )
                         }
-                        TransactionsContainer(transactions = Transaction.fakeList())
+                        TransactionsContainer(transactions = uiState.transactions)
                     }
                     AccountsContainer(
-                        accounts = Account.fakeList(),
+                        bankAccounts = uiState.bankAccounts,
                         onClickAddNewAccount = { showAccountBottomSheet = true }
                     )
                     CardsContainer(
-                        creditCards = CreditCard.fakeList(),
+                        creditCards = uiState.creditCards,
                         onClickAddNewCard = { showCardBottomSheet = true }
                     )
                     Spacer(modifier = Modifier.size(8.dp))
@@ -106,14 +113,14 @@ fun HomeScreen(
                     if (showAccountBottomSheet) {
                         NewAccountForm(
                             onDismissRequest = { showAccountBottomSheet = false },
-                            onCreateAccount = {}
+                            onCreateBankAccount = onCreateBankAccount
                         )
                     }
 
                     if (showCardBottomSheet) {
                         NewCardForm(
                             onDismissRequest = { showCardBottomSheet = false },
-                            onCreateCard = {}
+                            onCreateCard = onCreateCard
                         )
                     }
                 }
