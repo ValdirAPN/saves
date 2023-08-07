@@ -182,7 +182,16 @@ fun ExpenseScreen(
                             )
                             onCreateTransaction(transaction)
                             showSuccessDialog = true
-                        }
+                        },
+                        enabled = isExpenseFormValid(
+                            description,
+                            amount,
+                            source,
+                            installments,
+                            date,
+                            accountId,
+                            creditCardId
+                        )
                     ) {
                         Text(text = stringResource(id = R.string.register))
                     }
@@ -258,4 +267,21 @@ fun SourceSelectionPreview() {
             SourceSelection(modifier = Modifier, selected = "card") {}
         }
     }
+}
+
+private fun isExpenseFormValid(
+    description: String,
+    amount: String,
+    source: String,
+    installments: String,
+    date: String,
+    accountId: String,
+    creditCardId: String
+): Boolean {
+    return description.trim().isNotBlank()
+            && amount.trim().isNotBlank()
+            && source.trim().isNotBlank()
+            && installments.trim().isNotBlank()
+            && date.trim().isNotBlank()
+            && (accountId.trim().isNotBlank() || creditCardId.trim().isNotBlank())
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -250,7 +252,7 @@ fun NewCardForm(
             SavesTextField(
                 value = name,
                 onValueChange = { name = it },
-                placeholder = { Text(stringResource(id = R.string.account_name)) },
+                placeholder = { Text(stringResource(id = R.string.card_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -263,6 +265,7 @@ fun NewCardForm(
                 },
                 visualTransformation = NumberVisualTransformation(),
                 placeholder = { Text(stringResource(id = R.string.limit)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -270,6 +273,7 @@ fun NewCardForm(
                 value = dueDay,
                 onValueChange = { dueDay = it },
                 placeholder = { Text(stringResource(id = R.string.due_day)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.size(24.dp))
@@ -284,10 +288,19 @@ fun NewCardForm(
                     onCreateCard(card)
                     onDismissRequest()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isNewCreditCardFormValid(name, limit, dueDay)
             ) {
                 Text(text = stringResource(id = R.string.add))
             }
         }
     }
+}
+
+fun isNewCreditCardFormValid(name: String, limit: String, dueDay: String): Boolean {
+    return name.trim().isNotBlank()
+            && limit.trim().isNotBlank()
+            && limit.toDouble() > 0
+            && dueDay.trim().isNotBlank()
+            && dueDay.toDouble() > 0
 }

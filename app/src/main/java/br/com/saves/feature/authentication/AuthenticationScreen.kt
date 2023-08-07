@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.com.saves.BuildConfig
 import br.com.saves.R
 import br.com.saves.common.FirebaseAuthManager
 import br.com.saves.ui.composables.SavesButton
@@ -141,7 +142,7 @@ suspend fun signIn(
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
-                .setServerClientId("647254048608-u91s08984ba144q7plg3k4kh9oi437ap.apps.googleusercontent.com")
+                .setServerClientId(BuildConfig.GOOGLE_SIGNIN_SERVER_CLIENT_ID)
                 .setFilterByAuthorizedAccounts(false)
                 .build()
         )
