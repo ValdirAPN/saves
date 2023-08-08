@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 
 const val incomeNavigationRoute = "income_route"
 const val expenseNavigationRoute = "expense_route"
+const val transactionsNavigationRoute = "transactions_route"
 
 fun NavController.navigateToIncome(navOptions: NavOptions? = null) {
     this.navigate(incomeNavigationRoute, navOptions)
@@ -32,6 +33,20 @@ fun NavGraphBuilder.expenseScreen(onBackPressed: () -> Unit) {
     ) {
         ExpenseRoute(
             onBackPressed = onBackPressed,
+        )
+    }
+}
+
+fun NavController.navigateToTransactions(navOptions: NavOptions? = null) {
+    this.navigate(transactionsNavigationRoute, navOptions)
+}
+
+fun NavGraphBuilder.transactionsScreen(onBackPressed: () -> Unit) {
+    composable(
+        route = transactionsNavigationRoute,
+    ) {
+        TransactionsRoute(
+            onBackPressed = onBackPressed
         )
     }
 }

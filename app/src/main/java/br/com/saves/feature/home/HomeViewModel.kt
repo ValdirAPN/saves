@@ -45,7 +45,7 @@ class HomeViewModel @Inject constructor(
             userData = userData,
             creditCards = creditCards,
             bankAccounts = bankAccounts,
-            transactions = if (transactions.size > 4) transactions.asReversed().subList(0, 4) else transactions.asReversed(),
+            transactions = transactions,
             balance = if (bankAccounts.isEmpty()) 0.0 else bankAccounts.map { it.balance }.reduce { acc, balance -> acc + balance }
         )
     }.stateIn(

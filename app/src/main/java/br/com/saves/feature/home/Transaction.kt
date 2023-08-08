@@ -1,6 +1,7 @@
 package br.com.saves.feature.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,12 +28,17 @@ import br.com.saves.model.TransactionType
 import br.com.saves.ui.theme.SavesTheme
 import br.com.saves.utils.formatDate
 import br.com.saves.utils.toCurrency
+import java.time.LocalDateTime
 import java.util.Date
 import java.util.UUID
 
 
 @Composable
-fun TransactionsContainer(modifier: Modifier = Modifier, transactions: List<Transaction>) {
+fun TransactionsContainer(
+    modifier: Modifier = Modifier,
+    transactions: List<Transaction>,
+    navigateToTransactions: () -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
@@ -53,7 +59,8 @@ fun TransactionsContainer(modifier: Modifier = Modifier, transactions: List<Tran
             Text(
                 text = "Ver mais",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable { navigateToTransactions() }
             )
         }
         Column(
@@ -85,7 +92,8 @@ fun TransactionsContainerPreview() {
         ) {
             TransactionsContainer(
                 modifier = Modifier,
-                transactions = Transaction.fakeList()
+                transactions = Transaction.fakeList(),
+                navigateToTransactions = {}
             )
         }
     }
@@ -100,7 +108,8 @@ fun TransactionsContainerWithNoTransactionsPreview() {
         ) {
             TransactionsContainer(
                 modifier = Modifier,
-                transactions = emptyList()
+                transactions = emptyList(),
+                navigateToTransactions = {}
             )
         }
     }
@@ -151,7 +160,7 @@ fun TransactionContainerPreview() {
                 transaction = Transaction(
                     id = UUID.randomUUID().toString(),
                     description = "Cinema",
-                    date = Date(),
+                    date = LocalDateTime.now(),
                     amount = 56.70,
                     installments = 1,
                     type = TransactionType.INCOME

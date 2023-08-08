@@ -31,7 +31,9 @@ import br.com.saves.ui.composables.SavesTopBar
 import br.com.saves.utils.MONETARY_NUMBER_MAX_LENGTH
 import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.getDateString
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.TimeZone
 import java.util.UUID
 
 @Composable
@@ -134,7 +136,7 @@ fun IncomeScreen(
                             val transaction = Transaction(
                                 id = UUID.randomUUID().toString(),
                                 description = description,
-                                date = Date(date.toLong()),
+                                date = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.toLong()), TimeZone.getDefault().toZoneId()),
                                 amount = amount.toDouble() / 100,
                                 installments = 1,
                                 type = TransactionType.INCOME,

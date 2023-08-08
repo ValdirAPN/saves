@@ -37,7 +37,9 @@ import br.com.saves.ui.theme.SavesTheme
 import br.com.saves.utils.MONETARY_NUMBER_MAX_LENGTH
 import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.getDateString
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.TimeZone
 import java.util.UUID
 
 @Composable
@@ -173,7 +175,10 @@ fun ExpenseScreen(
                             val transaction = Transaction(
                                 id = UUID.randomUUID().toString(),
                                 description = description,
-                                date = Date(date.toLong()),
+                                date = LocalDateTime.ofInstant(
+                                    Instant.ofEpochMilli(date.toLong()),
+                                    TimeZone.getDefault().toZoneId()
+                                ),
                                 amount = amount.toDouble() / 100,
                                 installments = if (source == "card") installments.toInt() else 1,
                                 type = TransactionType.EXPENSE,
@@ -278,10 +283,20 @@ private fun isExpenseFormValid(
     accountId: String,
     creditCardId: String
 ): Boolean {
-    return description.trim().isNotBlank()
-            && amount.trim().isNotBlank()
-            && source.trim().isNotBlank()
-            && installments.trim().isNotBlank()
-            && date.trim().isNotBlank()
-            && (accountId.trim().isNotBlank() || creditCardId.trim().isNotBlank())
+    return when (source) {
+        "card" -> {
+            description.trim().isNotBlank()
+                    && amount.trim().isNotBlank()
+                    && (installments.trim().isNotBlank())
+                    && date.trim().isNotBlank()
+                    && creditCardId.trim().isNotBlank()
+        }
+
+        else -> {
+            description.trim().isNotBlank()
+                    && amount.trim().isNotBlank()
+                    && date.trim().isNotBlank()
+                    && accountId.trim().isNotBlank()
+        }
+    }
 }

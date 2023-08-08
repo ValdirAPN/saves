@@ -1,7 +1,5 @@
 package br.com.saves.data.repository
 
-import br.com.saves.model.BankAccount
-import br.com.saves.model.CreditCard
 import br.com.saves.model.Transaction
 import kotlinx.coroutines.flow.Flow
 

@@ -5,13 +5,16 @@ import android.icu.util.Calendar
 import android.text.format.DateUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-fun Date.formatDate(): String {
+fun LocalDateTime.formatDate(): String {
     val formatter = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.getDefault())
-    return formatter.format(this)
+    val date = Date.from(this.atZone(ZoneId.systemDefault()).toInstant())
+    return formatter.format(date)
 }
 
 fun Date.getRelativeDateTimeString(context: Context): String {

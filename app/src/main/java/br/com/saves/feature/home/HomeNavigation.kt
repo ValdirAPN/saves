@@ -14,6 +14,7 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.homeScreen(
     navigateToIncome: () -> Unit,
     navigateToExpense: () -> Unit,
+    navigateToTransactions: () -> Unit,
 ) {
     composable(
         route = homeNavigationRoute,
@@ -21,6 +22,7 @@ fun NavGraphBuilder.homeScreen(
         HomeRoute(
             navigateToIncome = navigateToIncome,
             navigateToExpense = navigateToExpense,
+            navigateToTransactions = navigateToTransactions,
         )
     }
 }

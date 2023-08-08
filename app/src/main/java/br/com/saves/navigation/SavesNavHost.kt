@@ -11,6 +11,8 @@ import br.com.saves.feature.transaction.expenseScreen
 import br.com.saves.feature.transaction.incomeScreen
 import br.com.saves.feature.transaction.navigateToExpense
 import br.com.saves.feature.transaction.navigateToIncome
+import br.com.saves.feature.transaction.navigateToTransactions
+import br.com.saves.feature.transaction.transactionsScreen
 
 @Composable
 fun SavesNavHost(
@@ -27,12 +29,16 @@ fun SavesNavHost(
         authenticationScreen()
         homeScreen(
             navigateToIncome = { navController.navigateToIncome() },
-            navigateToExpense = { navController.navigateToExpense() }
+            navigateToExpense = { navController.navigateToExpense() },
+            navigateToTransactions = { navController.navigateToTransactions() }
         )
         incomeScreen(
             onBackPressed = { navController.popBackStack() }
         )
         expenseScreen(
+            onBackPressed = { navController.popBackStack() }
+        )
+        transactionsScreen(
             onBackPressed = { navController.popBackStack() }
         )
     }

@@ -4,7 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.TimeZone
 
 @Entity(
     tableName = "transactions"
@@ -24,7 +26,7 @@ data class TransactionEntity(
 fun TransactionEntity.asModel() = Transaction(
     id = id,
     description = description,
-    date = Date(timestamp),
+    date = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()),
     amount = amount,
     installments = installments,
     type = type,

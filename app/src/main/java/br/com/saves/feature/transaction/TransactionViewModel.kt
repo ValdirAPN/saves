@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.saves.domain.CreateTransactionUseCase
 import br.com.saves.domain.GetBankAccountsUseCase
 import br.com.saves.domain.GetCreditCardsUseCase
+import br.com.saves.domain.GetTransactionsUseCase
 import br.com.saves.model.BankAccount
 import br.com.saves.model.CreditCard
 import br.com.saves.model.Transaction
@@ -20,16 +21,19 @@ import javax.inject.Inject
 class TransactionViewModel @Inject constructor(
     getBankAccountsUseCase: GetBankAccountsUseCase,
     getCreditCardsUseCase: GetCreditCardsUseCase,
+    getTransactionsUseCase: GetTransactionsUseCase,
     private val createTransactionUseCase: CreateTransactionUseCase,
 ) : ViewModel() {
 
     val uiState: StateFlow<TransactionUiState> = combine(
         getBankAccountsUseCase(),
-        getCreditCardsUseCase()
-    ) { bankAccounts, creditCards ->
+        getCreditCardsUseCase(),
+        getTransactionsUseCase(),
+    ) { bankAccounts, creditCards, transactions ->
         TransactionUiState.Success(
             bankAccounts = bankAccounts,
-            creditCards = creditCards
+            creditCards = creditCards,
+            transactions = transactions
         )
     }.stateIn(
         scope = viewModelScope,
@@ -48,6 +52,7 @@ sealed interface TransactionUiState {
     object Loading: TransactionUiState
     data class Success(
         val bankAccounts: List<BankAccount>,
-        val creditCards: List<CreditCard>
+        val creditCards: List<CreditCard>,
+        val transactions: List<Transaction>
     ): TransactionUiState
 }

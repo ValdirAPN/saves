@@ -31,4 +31,6 @@
     <string name="card">Cartão de crédito</string>
     <string name="number_of_installments">Quantidade de parcelas</string>
     <string name="card_name">Nome do cartão</string>
+    <string name="transactions">Transações</string>
+    <string name="month_balance">Saldo do mês</string>
 </resources>

@@ -30,12 +30,14 @@ import br.com.saves.model.Transaction
 fun HomeRoute(
     navigateToIncome: () -> Unit,
     navigateToExpense: () -> Unit,
+    navigateToTransactions: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState: HomeUiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         navigateToIncome = navigateToIncome,
         navigateToExpense = navigateToExpense,
+        navigateToTransactions = navigateToTransactions,
         onCreateCard = viewModel::createCreditCard,
         onCreateBankAccount = viewModel::createBankAccount,
         uiState = uiState
@@ -46,6 +48,7 @@ fun HomeRoute(
 fun HomeScreen(
     navigateToIncome: () -> Unit,
     navigateToExpense: () -> Unit,
+    navigateToTransactions: () -> Unit,
     onCreateCard: (CreditCard) -> Unit,
     onCreateBankAccount: (BankAccount) -> Unit,
     uiState: HomeUiState
@@ -98,7 +101,10 @@ fun HomeScreen(
                                 containerColor = MaterialTheme.colorScheme.error
                             )
                         }
-                        TransactionsContainer(transactions = uiState.transactions)
+                        TransactionsContainer(
+                            transactions = uiState.transactions.take(4),
+                            navigateToTransactions = navigateToTransactions,
+                        )
                     }
                     AccountsContainer(
                         bankAccounts = uiState.bankAccounts,
