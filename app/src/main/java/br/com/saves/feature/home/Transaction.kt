@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.saves.R
+import br.com.saves.model.Category
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import br.com.saves.ui.theme.SavesTheme
@@ -127,11 +130,13 @@ fun TransactionContainer(modifier: Modifier = Modifier, transaction: Transaction
             TransactionType.EXPENSE -> MaterialTheme.colorScheme.error
         }
         Icon(
-            painter = painterResource(id = R.drawable.coins),
+            painter = painterResource(id = transaction.category.icon),
+            tint = MaterialTheme.colorScheme.onPrimary,
             contentDescription = null,
             modifier = Modifier
                 .clip(RoundedCornerShape(100f))
-                .background(MaterialTheme.colorScheme.background)
+                .width(50.dp)
+                .background(transaction.category.color)
                 .padding(12.dp)
         )
         Column(
@@ -159,6 +164,7 @@ fun TransactionContainerPreview() {
             TransactionContainer(
                 transaction = Transaction(
                     id = UUID.randomUUID().toString(),
+                    category = Category.CONSTRUCTION,
                     description = "Cinema",
                     date = LocalDateTime.now(),
                     amount = 56.70,

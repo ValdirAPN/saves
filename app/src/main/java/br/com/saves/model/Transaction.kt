@@ -8,6 +8,7 @@ import java.util.UUID
 
 data class Transaction(
     val id: String,
+    val category: Category,
     val description: String,
     val date: LocalDateTime,
     val amount: Double,
@@ -18,15 +19,16 @@ data class Transaction(
 ) {
     companion object {
         fun fakeList() = listOf(
-            Transaction(id = UUID.randomUUID().toString(), description = "Salário - MobApps", date = LocalDateTime.now(), amount = 5500.0, installments = 1, type = TransactionType.INCOME),
-            Transaction(id = UUID.randomUUID().toString(),description = "Parcela da Casa", date = LocalDateTime.now(), amount = 890.0, installments = 1, type = TransactionType.EXPENSE),
-            Transaction(id = UUID.randomUUID().toString(),description = "Cinema", date = LocalDateTime.now(), amount = 94.73, installments = 1, type = TransactionType.EXPENSE),
+            Transaction(id = UUID.randomUUID().toString(), category = Category.CLOTHING, description = "Salário - MobApps", date = LocalDateTime.now(), amount = 5500.0, installments = 1, type = TransactionType.INCOME),
+            Transaction(id = UUID.randomUUID().toString(), category = Category.SHOPPING, description = "Parcela da Casa", date = LocalDateTime.now(), amount = 890.0, installments = 1, type = TransactionType.EXPENSE),
+            Transaction(id = UUID.randomUUID().toString(), category = Category.CREDIT_CARDS, description = "Cinema", date = LocalDateTime.now(), amount = 94.73, installments = 1, type = TransactionType.EXPENSE),
         )
     }
 }
 
 fun Transaction.asEntity() = TransactionEntity(
     id = id,
+    category = category,
     description = description,
     amount = amount,
     installments = installments,

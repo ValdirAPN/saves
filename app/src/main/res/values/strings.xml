@@ -33,4 +33,27 @@
     <string name="card_name">Nome do cartão</string>
     <string name="transactions">Transações</string>
     <string name="month_balance">Saldo do mês</string>
+    <string name="category">Categoria</string>
+    <string name="shopping">Compras</string>
+    <string name="suppermarket">Supermercado</string>
+    <string name="clothing">Vestuário</string>
+    <string name="food">Alimentação</string>
+    <string name="fuel">Combustível</string>
+    <string name="leisure">Lazer</string>
+    <string name="health">Saúde</string>
+    <string name="beauty_salon">Salão de Beleza</string>
+    <string name="education">Educação</string>
+    <string name="pet">Pet</string>
+    <string name="gym">Academia</string>
+    <string name="home">Moradia</string>
+    <string name="furniture">Movéis</string>
+    <string name="construction">Construção</string>
+    <string name="salary">Salário</string>
+    <string name="transport">Transporte</string>
+    <string name="credit_cards">Cartões</string>
+    <string name="gift">Presente</string>
+    <string name="donation">Doação</string>
+    <string name="trip">Viagem</string>
+    <string name="other">Outros</string>
+    <string name="wallet">Carteira</string>
 </resources>

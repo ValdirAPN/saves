@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +51,7 @@ import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.toCurrency
 import java.util.UUID
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AccountsContainer(
     bankAccounts: List<BankAccount>,
@@ -72,40 +75,20 @@ fun AccountsContainer(
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            maxItemsInEachRow = 2
         ) {
-            for (i in bankAccounts.indices step 2) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    AccountContainer(
-                        bankAccount = bankAccounts[i],
-                        onClick = { /*TODO*/ },
-                        icon = R.drawable.wallet,
-                        modifier = Modifier.weight(1f)
-                    )
-                    if ((i + 1) < bankAccounts.size) {
-                        AccountContainer(
-                            bankAccount = bankAccounts[i + 1],
-                            onClick = { /*TODO*/ },
-                            icon = R.drawable.wallet,
-                            modifier = Modifier.weight(1f)
-                        )
-                    } else {
-                        NewAccountButton(
-                            onClick = onClickAddNewAccount,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
+            bankAccounts.take(3).forEach { bankAccount ->
+                AccountContainer(
+                    bankAccount = bankAccount,
+                    onClick = { /*TODO*/ },
+                    icon = R.drawable.wallet,
+                    modifier = Modifier.weight(1f)
+                )
             }
-
-            if (bankAccounts.size % 2 == 0) {
-                Row {
-                    NewAccountButton(onClick = onClickAddNewAccount, modifier = Modifier.weight(1f))
-                }
-            }
+            NewAccountButton(onClick = onClickAddNewAccount, modifier = Modifier.weight(1f))
         }
     }
 }
@@ -153,7 +136,7 @@ fun AccountsContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                AccountsContainer(BankAccount.fakeList(), {})
+                AccountsContainer(BankAccount.fakeList()) {}
             }
         }
     }

@@ -1,31 +1,52 @@
 package br.com.saves.feature.transaction
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
+import br.com.saves.model.Category
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import br.com.saves.ui.composables.DatePickerField
@@ -65,6 +86,7 @@ fun ExpenseScreen(
         is TransactionUiState.Loading -> {}
         is TransactionUiState.Success -> {
             var description by remember { mutableStateOf("") }
+            var category by remember { mutableStateOf("") }
             var amount by remember { mutableStateOf("") }
             var source by remember { mutableStateOf("card") }
             var installments by remember { mutableStateOf("") }
@@ -95,6 +117,16 @@ fun ExpenseScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        val categories = Category.values().asList()
+                        CategoryDropdown(
+                            placeholder = { Text(stringResource(id = R.string.category)) },
+                            items = categories,
+                            selectedItem = if (category.isNotEmpty()) Category.valueOf(category) else null,
+                            onItemSelected = { _, item ->
+                                category = item.name
+                            }
+                        )
+
                         SavesTextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = description,
@@ -134,14 +166,15 @@ fun ExpenseScreen(
                                     creditCardId = item.id
                                 }
                             )
-                            Dropdown(
+                            SavesTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = installments,
+                                onValueChange = {
+                                    installments = it
+                                },
+                                visualTransformation = NumberVisualTransformation(),
                                 placeholder = { Text(stringResource(id = R.string.installments)) },
-                                notSetLabel = stringResource(id = R.string.number_of_installments),
-                                items = (1..24).toList(),
-                                selectedItem = if (installments.isNotEmpty()) installments.toInt() else null,
-                                onItemSelected = { _, item ->
-                                    installments = item.toString()
-                                }
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
                             )
                         } else {
                             Dropdown(
@@ -174,6 +207,7 @@ fun ExpenseScreen(
                         onClick = {
                             val transaction = Transaction(
                                 id = UUID.randomUUID().toString(),
+                                category = Category.valueOf(category),
                                 description = description,
                                 date = LocalDateTime.ofInstant(
                                     Instant.ofEpochMilli(date.toLong()),
@@ -298,5 +332,110 @@ private fun isExpenseFormValid(
                     && date.trim().isNotBlank()
                     && accountId.trim().isNotBlank()
         }
+    }
+}
+
+@Composable
+fun CategoryDropdown(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    placeholder: @Composable (() -> Unit),
+    items: List<Category>,
+    selectedItem: Category? = null,
+    onItemSelected: (index: Int, item: Category) -> Unit,
+    drawItem: @Composable (Category, Boolean, () -> Unit) -> Unit = { item, itemEnabled, onClick ->
+        CategoryDropdownItem(
+            text = stringResource(id = item.title),
+            icon = painterResource(id = item.icon),
+            color = item.color,
+            enabled = itemEnabled,
+            onClick = onClick
+        )
+    }
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.height(IntrinsicSize.Min)) {
+        SavesTextField(
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = placeholder,
+            value = selectedItem?.let { stringResource(id = it.title) } ?: "",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(Icons.Filled.ArrowDropDown, "")
+            },
+            readOnly = true
+        )
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.extraSmall)
+                .clickable(enabled = enabled) { expanded = true },
+            color = Color.Transparent,
+        ) {}
+    }
+
+    if (expanded) {
+        Dialog(
+            onDismissRequest = { expanded = false }
+        ) {
+            Surface(
+                modifier = Modifier.padding(vertical = 16.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                val listState = rememberLazyListState()
+                if (selectedItem.toString().isEmpty().not()) {
+                    val index = items.indexOf(selectedItem)
+
+                    if (index > -1) {
+                        LaunchedEffect(key1 = "ScrollToSelected") {
+                            listState.scrollToItem(index = index)
+                        }
+                    }
+                }
+
+                LazyColumn(modifier = Modifier.fillMaxWidth(), state = listState) {
+                    itemsIndexed(items) { index, item ->
+                        drawItem(
+                            item,
+                            true
+                        ) {
+                            onItemSelected(index, item)
+                            expanded = false
+                        }
+
+                        if (index < items.lastIndex) {
+                            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun CategoryDropdownItem(
+    text: String,
+    icon: Painter,
+    color: Color,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .clickable(enabled) { onClick() }
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Icon(painter = icon, contentDescription = null, tint = color)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall
+        )
     }
 }

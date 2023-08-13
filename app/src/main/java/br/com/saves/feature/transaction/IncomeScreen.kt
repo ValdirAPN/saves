@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
+import br.com.saves.model.Category
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import br.com.saves.ui.composables.DatePickerField
@@ -135,6 +136,7 @@ fun IncomeScreen(
                         onClick = {
                             val transaction = Transaction(
                                 id = UUID.randomUUID().toString(),
+                                category = Category.SALARY,
                                 description = description,
                                 date = LocalDateTime.ofInstant(Instant.ofEpochMilli(date.toLong()), TimeZone.getDefault().toZoneId()),
                                 amount = amount.toDouble() / 100,

@@ -2,6 +2,7 @@ package br.com.saves.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import br.com.saves.model.Category
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import java.time.Instant
@@ -14,6 +15,7 @@ import java.util.TimeZone
 data class TransactionEntity(
     @PrimaryKey
     val id: String,
+    val category: Category,
     val description: String,
     val amount: Double,
     val installments: Int,
@@ -25,6 +27,7 @@ data class TransactionEntity(
 
 fun TransactionEntity.asModel() = Transaction(
     id = id,
+    category = category,
     description = description,
     date = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()),
     amount = amount,

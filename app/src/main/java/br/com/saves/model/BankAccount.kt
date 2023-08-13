@@ -1,5 +1,7 @@
 package br.com.saves.model
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import br.com.saves.database.model.BankAccountEntity
 import br.com.saves.database.model.CreditCardEntity
 import java.util.UUID
