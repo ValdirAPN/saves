@@ -176,8 +176,12 @@ fun AccountContainer(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                val name =
+                    if (bankAccount.name == "default") stringResource(id = R.string.wallet)
+                    else bankAccount.name
+
                 Text(
-                    text = bankAccount.name,
+                    text = name,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

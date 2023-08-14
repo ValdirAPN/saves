@@ -21,6 +21,9 @@ interface BankAccountDao {
     @Upsert
     suspend fun upsert(entity: BankAccountEntity)
 
+    @Upsert
+    suspend fun upsert(entities: List<BankAccountEntity>)
+
     @Query(
         value = """
             DELETE FROM bank_accounts

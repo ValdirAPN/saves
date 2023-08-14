@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.saves.BuildConfig
@@ -36,8 +37,12 @@ import br.com.saves.ui.theme.SavesTheme
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 private const val TAG = "AuthenticationScreen"
 
@@ -49,7 +54,6 @@ fun AuthenticationRoute() {
 @Composable
 fun AuthenticationScreen() {
     val context = LocalContext.current
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -133,7 +137,7 @@ private fun AuthenticationScreenPreview() {
     }
 }
 
-suspend fun signIn(
+private suspend fun signIn(
     context: Context,
     launcher: ActivityResultLauncher<IntentSenderRequest>
 ) {

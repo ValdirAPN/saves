@@ -10,4 +10,6 @@ interface BankAccountRepository {
     suspend fun create(bankAccount: BankAccount)
 
     suspend fun update(bankAccount: BankAccount)
+
+    suspend fun refresh()
 }
