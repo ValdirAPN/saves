@@ -1,6 +1,7 @@
 package br.com.saves.network
 
 import android.util.Log
+import br.com.saves.model.Bank
 import br.com.saves.network.model.NetworkBankAccount
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
@@ -57,9 +58,14 @@ class BankAccountNetworkDataSourceImpl @Inject constructor() : BankAccountNetwor
 
     private fun mapToNetworkBankAccount(hashMap: HashMap<String, *>): NetworkBankAccount {
         val id = hashMap["id"] ?: throw Exception("No id found")
+        val bankValue = hashMap["bank"] ?: throw Exception("No bank found")
         val name = hashMap["name"] ?: throw Exception("No name found")
         val amount = hashMap["balance"] ?: throw Exception("No balance found")
 
-        return NetworkBankAccount(id.toString(), name.toString(), amount.toString().toDouble())
+        val bank = if (bankValue.toString().isNotBlank()) {
+            Bank.valueOf(bankValue.toString())
+        } else Bank.WALLET
+
+        return NetworkBankAccount(id.toString(), bank, name.toString(), amount.toString().toDouble())
     }
 }

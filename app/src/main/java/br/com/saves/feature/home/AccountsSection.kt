@@ -2,10 +2,13 @@ package br.com.saves.feature.home
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,15 +18,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.saves.R
 import br.com.saves.model.BankAccount
+import br.com.saves.model.Bank
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.theme.SavesTheme
@@ -84,7 +96,7 @@ fun AccountsContainer(
                 AccountContainer(
                     bankAccount = bankAccount,
                     onClick = { /*TODO*/ },
-                    icon = R.drawable.wallet,
+                    icon = bankAccount.bank.icon,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -169,6 +181,7 @@ fun AccountContainer(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 modifier = Modifier
+                    .size(32.dp)
                     .clip(RoundedCornerShape(100f))
                     .background(MaterialTheme.colorScheme.background)
                     .padding(8.dp)
@@ -204,7 +217,7 @@ fun AccountContainerPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             AccountContainer(
-                bankAccount = BankAccount("", "Carteira", 0.0),
+                bankAccount = BankAccount("", Bank.NUBANK, "Carteira", 0.0),
                 onClick = {},
                 modifier = Modifier,
                 icon = R.drawable.wallet
@@ -219,6 +232,7 @@ fun NewAccountForm(
     onCreateBankAccount: (BankAccount) -> Unit
 ) {
 
+    var bank by remember { mutableStateOf(Bank.WALLET) }
     var name by remember { mutableStateOf("") }
     var balance by remember { mutableStateOf("") }
 
@@ -238,6 +252,15 @@ fun NewAccountForm(
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.size(24.dp))
+            val banks = Bank.values().asList()
+            BankIconDropdown(
+                items = banks,
+                selectedItem = Bank.valueOf(bank.name),
+                onItemSelected = { _, item ->
+                    bank = item
+                }
+            )
+            Spacer(modifier = Modifier.size(16.dp))
             SavesTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -263,6 +286,7 @@ fun NewAccountForm(
                     val bankAccount = BankAccount(
                         id = UUID.randomUUID().toString(),
                         name = name,
+                        bank = bank,
                         balance = balance.toDouble() / 100,
                     )
                     onCreateBankAccount(bankAccount)
@@ -274,6 +298,139 @@ fun NewAccountForm(
                 Text(text = stringResource(id = R.string.add))
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun NewAccountForm() {
+    SavesTheme {
+        NewAccountForm(onDismissRequest = {}, onCreateBankAccount = {})
+    }
+}
+
+@Composable
+fun BankIconDropdown(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    items: List<Bank>,
+    selectedItem: Bank? = null,
+    onItemSelected: (index: Int, item: Bank) -> Unit,
+    drawItem: @Composable (Bank, Boolean, () -> Unit) -> Unit = { item, itemEnabled, onClick ->
+        val title = if (item.title == "default") {
+            stringResource(id = R.string.wallet)
+        } else {
+            item.title
+        }
+        BankIconDropdownItem(
+            text = title,
+            icon = painterResource(id = item.icon),
+            enabled = itemEnabled,
+            onClick = onClick
+        )
+    }
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.height(IntrinsicSize.Min), contentAlignment = Alignment.CenterStart) {
+        SavesTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = "",
+            onValueChange = {},
+            trailingIcon = {
+                Icon(Icons.Filled.ArrowDropDown, "")
+            },
+            readOnly = true
+        )
+
+        Row(
+            modifier = Modifier.padding(start = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(24.dp)
+                    .fillMaxSize(),
+                painter = painterResource(id = selectedItem?.icon ?: R.drawable.wallet),
+                contentDescription = null,
+                tint = Color.Unspecified
+            )
+            var title = selectedItem?.title
+            if (title == null || title == "default") title = stringResource(id = R.string.wallet)
+            Text(text = title)
+        }
+
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.extraSmall)
+                .clickable(enabled = enabled) { expanded = true },
+            color = Color.Transparent,
+        ) {}
+    }
+
+    if (expanded) {
+        Dialog(
+            onDismissRequest = { expanded = false }
+        ) {
+            Surface(
+                modifier = Modifier.padding(vertical = 16.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                val listState = rememberLazyListState()
+                if (selectedItem.toString().isEmpty().not()) {
+                    val index = items.indexOf(selectedItem)
+
+                    if (index > -1) {
+                        LaunchedEffect(key1 = "ScrollToSelected") {
+                            listState.scrollToItem(index = index)
+                        }
+                    }
+                }
+
+                LazyColumn(modifier = Modifier.fillMaxWidth(), state = listState) {
+                    itemsIndexed(items) { index, item ->
+                        drawItem(
+                            item,
+                            true
+                        ) {
+                            onItemSelected(index, item)
+                            expanded = false
+                        }
+
+                        if (index < items.lastIndex) {
+                            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun BankIconDropdownItem(
+    text: String,
+    icon: Painter,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .clickable(enabled) { onClick() }
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Icon(modifier = Modifier.size(24.dp), painter = icon, contentDescription = null, tint = Color.Unspecified)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
