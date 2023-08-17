@@ -40,10 +40,9 @@ fun <T> Dropdown(
     selectedItem: T? = null,
     onItemSelected: (index: Int, item: T) -> Unit,
     itemToString: (T) -> String = { it.toString() },
-    drawItem: @Composable (T, Boolean, Boolean, () -> Unit) -> Unit = { item, selected, itemEnabled, onClick ->
+    drawItem: @Composable (T, Boolean, () -> Unit) -> Unit = { item, itemEnabled, onClick ->
         DropdownItem(
             text = itemToString(item),
-            selected = selected,
             enabled = itemEnabled,
             onClick = onClick
         )
@@ -96,17 +95,14 @@ fun <T> Dropdown(
                         item {
                             DropdownItem(
                                 text = notSetLabel,
-                                selected = false,
                                 enabled = false,
                                 onClick = { },
                             )
                         }
                     }
                     itemsIndexed(items) { index, item ->
-                        val isSelectedItem = index == items.indexOf(selectedItem)
                         drawItem(
                             item,
-                            isSelectedItem,
                             true
                         ) {
                             onItemSelected(index, item)
@@ -127,7 +123,6 @@ fun <T> Dropdown(
 @Composable
 fun DropdownItem(
     text: String,
-    selected: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
 ) {

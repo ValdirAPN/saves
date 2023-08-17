@@ -14,7 +14,8 @@
     <string name="account_name">Nome da conta</string>
     <string name="balance">Saldo</string>
     <string name="add">Adicionar</string>
-    <string name="due_day">Vencimento</string>
+    <string name="due_day_placeholder">Vencimento</string>
+    <string name="due_day">Vence dia %s</string>
     <string name="limit">Limite</string>
     <string name="back">Voltar</string>
     <string name="description">Descrição</string>
@@ -56,4 +57,8 @@
     <string name="trip">Viagem</string>
     <string name="other">Outros</string>
     <string name="wallet">Carteira</string>
+    <string name="available_limit">Limite disponível</string>
+    <string name="no_credit_cards_found">Nenhum cartão de crédito encontrado</string>
+    <string name="default_icon">Ícone padrão</string>
+    <string name="select_the_icon">Selecione o ícone</string>
 </resources>

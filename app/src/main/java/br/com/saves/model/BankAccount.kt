@@ -13,7 +13,7 @@ data class BankAccount(
         fun fakeList() = listOf(
             BankAccount(UUID.randomUUID().toString(), Bank.NUBANK, "Nubank", 0.0),
             BankAccount(UUID.randomUUID().toString(), Bank.WILL, "Will", 0.0),
-            BankAccount(UUID.randomUUID().toString(), Bank.CITI, "Inter", 0.0),
+            BankAccount(UUID.randomUUID().toString(), Bank.INTER, "Inter", 0.0),
         )
     }
 }

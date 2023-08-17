@@ -5,7 +5,6 @@ import br.com.saves.model.Bank
 import br.com.saves.network.model.NetworkBankAccount
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -64,7 +63,7 @@ class BankAccountNetworkDataSourceImpl @Inject constructor() : BankAccountNetwor
 
         val bank = if (bankValue.toString().isNotBlank()) {
             Bank.valueOf(bankValue.toString())
-        } else Bank.WALLET
+        } else Bank.DEFAULT
 
         return NetworkBankAccount(id.toString(), bank, name.toString(), amount.toString().toDouble())
     }

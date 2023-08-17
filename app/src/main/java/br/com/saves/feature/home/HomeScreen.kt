@@ -108,7 +108,7 @@ fun HomeScreen(
                     }
                     AccountsContainer(
                         bankAccounts = uiState.bankAccounts,
-                        onClickAddNewAccount = { showAccountBottomSheet = true }
+                        onClickAddNewAccount = { showAccountBottomSheet = true },
                     )
                     CardsContainer(
                         creditCards = uiState.creditCards,

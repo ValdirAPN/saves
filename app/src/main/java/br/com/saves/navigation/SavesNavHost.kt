@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import br.com.saves.SavesAppState
 import br.com.saves.feature.authentication.authenticationNavigationRoute
 import br.com.saves.feature.authentication.authenticationScreen
+import br.com.saves.feature.bankaccounts.bankAccountsScreen
+import br.com.saves.feature.bankaccounts.navigateToBankAccounts
 import br.com.saves.feature.home.homeScreen
 import br.com.saves.feature.transaction.expenseScreen
 import br.com.saves.feature.transaction.incomeScreen
@@ -30,7 +32,7 @@ fun SavesNavHost(
         homeScreen(
             navigateToIncome = { navController.navigateToIncome() },
             navigateToExpense = { navController.navigateToExpense() },
-            navigateToTransactions = { navController.navigateToTransactions() }
+            navigateToTransactions = { navController.navigateToTransactions() },
         )
         incomeScreen(
             onBackPressed = { navController.popBackStack() }
@@ -39,6 +41,9 @@ fun SavesNavHost(
             onBackPressed = { navController.popBackStack() }
         )
         transactionsScreen(
+            onBackPressed = { navController.popBackStack() }
+        )
+        bankAccountsScreen(
             onBackPressed = { navController.popBackStack() }
         )
     }

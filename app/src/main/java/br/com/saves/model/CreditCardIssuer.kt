@@ -3,8 +3,8 @@ package br.com.saves.model
 import androidx.annotation.DrawableRes
 import br.com.saves.R
 
-enum class Bank(@DrawableRes val icon: Int, val title: String, val background: Long, val foreground: Long?) {
-    DEFAULT(R.drawable.wallet, "default", background = 0xFF242424, foreground = 0xFFFFFFFF),
+enum class CreditCardIssuer(@DrawableRes val icon: Int, val title: String, val background: Long, val foreground: Long?) {
+    DEFAULT(R.drawable.creditcard, "default", background = 0xFF242424, foreground = 0xFFFFFFFF),
     NUBANK(R.drawable.nubank, "Nubank", background = 0xFF820AD1, foreground = 0xFFFFFFFF),
     BB(R.drawable.banco_do_brasil, "Banco do Brasil", background = 0xFF0061AA, foreground = 0xFFFFFFFF),
     ITAU(R.drawable.itau, "Itaú", background = 0xFFFFF212, foreground = null),

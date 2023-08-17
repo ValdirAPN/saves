@@ -1,6 +1,7 @@
 package br.com.saves.feature.home
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,27 +10,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,8 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.com.saves.R
-import br.com.saves.model.BankAccount
 import br.com.saves.model.Bank
+import br.com.saves.model.BankAccount
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.theme.SavesTheme
@@ -63,11 +63,10 @@ import br.com.saves.utils.NumberVisualTransformation
 import br.com.saves.utils.toCurrency
 import java.util.UUID
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AccountsContainer(
     bankAccounts: List<BankAccount>,
-    onClickAddNewAccount: () -> Unit
+    onClickAddNewAccount: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -81,62 +80,38 @@ fun AccountsContainer(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                text = stringResource(id = R.string.see_more),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
+            NewAccountButton(onClick = onClickAddNewAccount)
         }
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            maxItemsInEachRow = 2
+
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            bankAccounts.take(3).forEach { bankAccount ->
+            bankAccounts.forEach { bankAccount ->
                 AccountContainer(
                     bankAccount = bankAccount,
                     onClick = { /*TODO*/ },
                     icon = bankAccount.bank.icon,
-                    modifier = Modifier.weight(1f)
                 )
             }
-            NewAccountButton(onClick = onClickAddNewAccount, modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
 fun NewAccountButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Button(
+    OutlinedIconButton(
         onClick = onClick,
-        modifier = modifier.height(120.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            contentColor = Color.Unspecified,
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        contentPadding = PaddingValues(8.dp)
+        modifier = modifier.size(32.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
     ) {
-        Column(
-            modifier = Modifier
-                .padding(12.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.pluscircle),
-                contentDescription = null,
-                modifier = Modifier
-            )
-            Column {
-                Text(
-                    text = stringResource(id = R.string.add_account),
-                    modifier = Modifier.width(100.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
+        Icon(
+            modifier = Modifier.padding(8.dp),
+            painter = painterResource(id = R.drawable.plus),
+            contentDescription = stringResource(id = R.string.add_account),
+            tint = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
@@ -147,8 +122,8 @@ fun AccountsContainerPreview() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                AccountsContainer(BankAccount.fakeList()) {}
+            Column {
+                AccountsContainer(BankAccount.fakeList(), {})
             }
         }
     }
@@ -161,50 +136,53 @@ fun AccountContainer(
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int,
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(120.dp),
-        shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            contentColor = Color.Unspecified,
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        contentPadding = PaddingValues(8.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(12.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(100f))
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(8.dp)
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                val name =
-                    if (bankAccount.name == "default") stringResource(id = R.string.wallet)
-                    else bankAccount.name
+        val iconTint = if (bankAccount.bank.foreground != null) {
+            Color(bankAccount.bank.foreground)
+        } else Color.Unspecified
 
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = bankAccount.balance.toCurrency(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+        Icon(
+            painter = painterResource(id = icon),
+            tint = iconTint,
+            contentDescription = null,
+            modifier = Modifier
+                .size(32.dp)
+                .clip(RoundedCornerShape(100f))
+                .background(Color(bankAccount.bank.background))
+                .padding(8.dp)
+        )
+        val name =
+            if (bankAccount.name == "default") stringResource(id = R.string.wallet)
+            else bankAccount.name
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = stringResource(id = R.string.balance),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = bankAccount.balance.toCurrency(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }
@@ -232,7 +210,7 @@ fun NewAccountForm(
     onCreateBankAccount: (BankAccount) -> Unit
 ) {
 
-    var bank by remember { mutableStateOf(Bank.WALLET) }
+    var bank by remember { mutableStateOf(Bank.DEFAULT) }
     var name by remember { mutableStateOf("") }
     var balance by remember { mutableStateOf("") }
 
@@ -260,7 +238,7 @@ fun NewAccountForm(
                     bank = item
                 }
             )
-            Spacer(modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.size(24.dp))
             SavesTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -316,121 +294,147 @@ fun BankIconDropdown(
     items: List<Bank>,
     selectedItem: Bank? = null,
     onItemSelected: (index: Int, item: Bank) -> Unit,
-    drawItem: @Composable (Bank, Boolean, () -> Unit) -> Unit = { item, itemEnabled, onClick ->
-        val title = if (item.title == "default") {
-            stringResource(id = R.string.wallet)
-        } else {
-            item.title
-        }
-        BankIconDropdownItem(
-            text = title,
-            icon = painterResource(id = item.icon),
-            enabled = itemEnabled,
-            onClick = onClick
-        )
-    }
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier.height(IntrinsicSize.Min), contentAlignment = Alignment.CenterStart) {
-        SavesTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = "",
-            onValueChange = {},
-            trailingIcon = {
-                Icon(Icons.Filled.ArrowDropDown, "")
-            },
-            readOnly = true
-        )
-
-        Row(
-            modifier = Modifier.padding(start = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = modifier
+                .width(80.dp)
+                .height(80.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(24.dp)
-                    .fillMaxSize(),
-                painter = painterResource(id = selectedItem?.icon ?: R.drawable.wallet),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
-            var title = selectedItem?.title
-            if (title == null || title == "default") title = stringResource(id = R.string.wallet)
-            Text(text = title)
-        }
+            selectedItem?.let { item ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(100.dp))
+                        .background(Color(item.background))
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(32.dp),
+                        painter = painterResource(id = item.icon),
+                        contentDescription = null,
+                        tint = if (item.foreground != null) Color(item.foreground) else Color.Unspecified
+                    )
+                }
+            }
 
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(MaterialTheme.shapes.extraSmall)
-                .clickable(enabled = enabled) { expanded = true },
-            color = Color.Transparent,
-        ) {}
+            Surface(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(100.dp))
+                    .clickable(enabled = enabled) { expanded = true },
+                color = Color.Transparent,
+            ) {}
+        }
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = stringResource(id = R.string.select_the_icon), color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.widthIn(max = 100.dp))
     }
 
     if (expanded) {
-        Dialog(
-            onDismissRequest = { expanded = false }
+        BankIconDropdownDialog(
+            onDismissRequest = { expanded = false },
+            items,
+            onClick = { index, item ->
+                onItemSelected(index, item)
+                expanded = false
+            }
+        )
+    }
+
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun BankIconDropdownDialog(
+    onDismissRequest: () -> Unit,
+    items: List<Bank>,
+    onClick: (index: Int, item: Bank) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(12.dp)
         ) {
-            Surface(
-                modifier = Modifier.padding(vertical = 16.dp),
-                shape = RoundedCornerShape(12.dp)
+            val itemsPerRow = 4
+            val rows = items.chunked(itemsPerRow)
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                maxItemsInEachRow = 4
             ) {
-                val listState = rememberLazyListState()
-                if (selectedItem.toString().isEmpty().not()) {
-                    val index = items.indexOf(selectedItem)
-
-                    if (index > -1) {
-                        LaunchedEffect(key1 = "ScrollToSelected") {
-                            listState.scrollToItem(index = index)
-                        }
+                rows.forEachIndexed { rowIndex, creditCardIssuers ->
+                    val isLastRow = rowIndex == rows.size - 1
+                    creditCardIssuers.forEachIndexed { index, item ->
+                        CreditCardIssuerIconDropdownItem(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f),
+                            icon = painterResource(id = item.icon),
+                            background = Color(item.background),
+                            foreground = if (item.foreground != null) Color(item.foreground) else Color.Unspecified,
+                            onClick = { onClick(index, item) }
+                        )
                     }
-                }
-
-                LazyColumn(modifier = Modifier.fillMaxWidth(), state = listState) {
-                    itemsIndexed(items) { index, item ->
-                        drawItem(
-                            item,
-                            true
-                        ) {
-                            onItemSelected(index, item)
-                            expanded = false
-                        }
-
-                        if (index < items.lastIndex) {
-                            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    if (isLastRow) {
+                        val spacers = itemsPerRow - creditCardIssuers.size
+                        for (i in 0..spacers) {
+                            Spacer(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(0.dp)
+                            )
                         }
                     }
                 }
             }
         }
     }
+}
 
+@Preview
+@Composable
+fun BankIconDropdownDialogPreview() {
+    BankIconDropdownDialog(
+        onDismissRequest = {},
+        items = Bank.values().asList(),
+        onClick = { _, _ ->}
+    )
+}
+@Preview
+@Composable
+fun BankIconDropdownPreview() {
+    BankIconDropdown(
+        items = Bank.values().asList(),
+        onItemSelected = { _, _, ->}
+    )
 }
 
 @Composable
 fun BankIconDropdownItem(
-    text: String,
     icon: Painter,
-    enabled: Boolean,
     onClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .clickable(enabled) { onClick() }
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    IconButton(
+        modifier = Modifier.padding(16.dp).background(MaterialTheme.colorScheme.surface),
+        onClick = onClick
     ) {
         Icon(modifier = Modifier.size(24.dp), painter = icon, contentDescription = null, tint = Color.Unspecified)
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onBackground
-        )
     }
 }
 
