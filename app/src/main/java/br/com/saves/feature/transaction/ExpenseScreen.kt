@@ -46,11 +46,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
+import br.com.saves.model.BankAccount
 import br.com.saves.model.Category
+import br.com.saves.model.CreditCard
 import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import br.com.saves.ui.composables.DatePickerField
-import br.com.saves.ui.composables.Dropdown
+import br.com.saves.ui.composables.FinanceInstitutionDropdown
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.composables.SavesTopBar
@@ -88,18 +90,25 @@ fun ExpenseScreen(
             var description by remember { mutableStateOf("") }
             var category by remember { mutableStateOf("") }
             var amount by remember { mutableStateOf("") }
-            var source by remember { mutableStateOf("card") }
+            var source by remember { mutableStateOf("account") }
             var installments by remember { mutableStateOf("") }
             var date by remember { mutableStateOf("") }
             var accountId by remember { mutableStateOf("") }
             var creditCardId by remember { mutableStateOf("") }
 
             var showSuccessDialog by remember { mutableStateOf(false) }
+            var showErrorDialog by remember { mutableStateOf(false) }
 
             if (showSuccessDialog) {
                 CreateTransactionSuccessDialog {
                     showSuccessDialog = false
                     onBackPressed()
+                }
+            }
+
+            if (showErrorDialog) {
+                ErrorDialog {
+                    showErrorDialog = false
                 }
             }
 
@@ -148,6 +157,10 @@ fun ExpenseScreen(
                         SourceSelection(
                             selected = source,
                             onClick = {
+                                if (it == "card" && uiState.creditCards.isEmpty()) {
+                                    showErrorDialog = true
+                                    return@SourceSelection
+                                }
                                 source = it
                                 installments = ""
                                 accountId = ""
@@ -156,12 +169,11 @@ fun ExpenseScreen(
                         )
 
                         if (source == "card") {
-                            Dropdown(
+                            val creditCard = if (creditCardId.isNotEmpty()) uiState.creditCards.find { it.id == creditCardId } else null
+                            FinanceInstitutionDropdown(
                                 placeholder = { Text(stringResource(id = R.string.card)) },
-                                notSetLabel = stringResource(id = R.string.card),
                                 items = uiState.creditCards,
-                                itemToString = { it.name },
-                                selectedItem = if (creditCardId.isNotEmpty()) uiState.creditCards.find { it.id == creditCardId } else null,
+                                selectedItem = creditCard,
                                 onItemSelected = { _, item ->
                                     creditCardId = item.id
                                 }
@@ -177,12 +189,11 @@ fun ExpenseScreen(
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
                             )
                         } else {
-                            Dropdown(
+                            val bankAccount = if (accountId.isNotEmpty()) uiState.bankAccounts.find { it.id == accountId } else null
+                            FinanceInstitutionDropdown(
                                 placeholder = { Text(stringResource(id = R.string.account)) },
-                                notSetLabel = stringResource(id = R.string.account),
                                 items = uiState.bankAccounts,
-                                itemToString = { it.name },
-                                selectedItem = if (accountId.isNotEmpty()) uiState.bankAccounts.find { it.id == accountId } else null,
+                                selectedItem = bankAccount,
                                 onItemSelected = { _, item ->
                                     accountId = item.id
                                 }
@@ -238,6 +249,24 @@ fun ExpenseScreen(
 
                 Spacer(modifier = Modifier.size(24.dp))
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ExpenseScreenPreview() {
+    SavesTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            ExpenseScreen(
+                onBackPressed = { /*TODO*/ },
+                onCreateTransaction = {},
+                uiState = TransactionUiState.Success(
+                    BankAccount.fakeList(),
+                    CreditCard.fakeList(),
+                    Transaction.fakeList()
+                )
+            )
         }
     }
 }

@@ -4,11 +4,11 @@ import br.com.saves.database.model.BankAccountEntity
 import java.util.UUID
 
 data class BankAccount(
-    val id: String,
-    val bank: Bank,
-    val name: String,
+    override val id: String,
+    override val institution: Bank,
+    override val name: String,
     val balance: Double
-) {
+): FinanceEntity {
     companion object {
         fun fakeList() = listOf(
             BankAccount(UUID.randomUUID().toString(), Bank.NUBANK, "Nubank", 0.0),
@@ -20,7 +20,7 @@ data class BankAccount(
 
 fun BankAccount.asEntity() = BankAccountEntity(
     id = id,
-    bank = bank,
+    bank = institution,
     name = name,
     balance = balance
 )

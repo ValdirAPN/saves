@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.saves.R
+import br.com.saves.model.Bank
 import br.com.saves.model.BankAccount
 import br.com.saves.ui.composables.SavesTopBar
 import br.com.saves.utils.toCurrency
@@ -100,7 +99,7 @@ fun BankAccountItem(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Icon(
-                painter = painterResource(id = bankAccount.bank.icon),
+                painter = painterResource(id = bankAccount.institution.icon),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -111,9 +110,10 @@ fun BankAccountItem(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                val name =
-                    if (bankAccount.name == "default") stringResource(id = R.string.wallet)
-                    else bankAccount.name
+                val name = when (bankAccount.name) {
+                    Bank.BANK_DEFAULT.name -> stringResource(id = R.string.wallet)
+                    else -> bankAccount.name
+                }
 
                 Text(
                     text = name,

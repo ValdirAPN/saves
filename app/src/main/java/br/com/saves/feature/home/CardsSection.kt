@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,8 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -159,20 +155,20 @@ fun CardContainer(
             .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val iconTint = if (creditCard.issuer.foreground != null) {
-            Color(creditCard.issuer.foreground)
+        val iconTint = if (creditCard.institution.foreground != null) {
+            Color(creditCard.institution.foreground)
         } else Color.Unspecified
 
         Icon(
-            painter = painterResource(id = creditCard.issuer.icon),
+            painter = painterResource(id = creditCard.institution.icon),
             tint = iconTint,
             contentDescription = null,
             modifier = Modifier
-                .size(32.dp)
+                .size(40.dp)
                 .clip(RoundedCornerShape(100f))
-                .background(Color(creditCard.issuer.background))
+                .background(Color(creditCard.institution.background))
                 .padding(8.dp)
         )
 
@@ -183,7 +179,7 @@ fun CardContainer(
         ) {
             Text(
                 text = creditCard.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -192,20 +188,23 @@ fun CardContainer(
                     id = R.string.due_day,
                     creditCard.dueDay.toString().padStart(2, '0')
                 ),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
 
-        Column(horizontalAlignment = Alignment.End) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
                 text = stringResource(id = R.string.available_limit),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = creditCard.availableLimit.toCurrency(),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -222,7 +221,7 @@ fun CardContainerPreview() {
             CardContainer(
                 creditCard = CreditCard(
                     id = "",
-                    issuer = CreditCardIssuer.NUBANK,
+                    institution = CreditCardIssuer.NUBANK,
                     name = "Nubank",
                     limit = 110.0,
                     availableLimit = 10.0,
@@ -262,9 +261,9 @@ fun NewCardForm(
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.size(24.dp))
-            val creditCardIssuers = CreditCardIssuer.values().asList()
+            val creditCardIssuerEnums = CreditCardIssuer.values().asList()
             CreditCardIssuerIconDropdown(
-                items = creditCardIssuers,
+                items = creditCardIssuerEnums,
                 selectedItem = CreditCardIssuer.valueOf(issuer.name),
                 onItemSelected = { _, item ->
                     issuer = item
@@ -303,7 +302,7 @@ fun NewCardForm(
                 onClick = {
                     val card = CreditCard(
                         id = UUID.randomUUID().toString(),
-                        issuer = issuer,
+                        institution = issuer,
                         name = name,
                         limit = limit.toDouble() / 100,
                         availableLimit = limit.toDouble() / 100,
@@ -380,7 +379,11 @@ fun CreditCardIssuerIconDropdown(
             ) {}
         }
         Spacer(modifier = Modifier.size(16.dp))
-        Text(text = stringResource(id = R.string.select_the_icon), color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.widthIn(max = 100.dp))
+        Text(
+            text = stringResource(id = R.string.select_the_icon),
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.widthIn(max = 100.dp)
+        )
     }
 
     if (expanded) {

@@ -26,6 +26,7 @@ import br.com.saves.model.Transaction
 import br.com.saves.model.TransactionType
 import br.com.saves.ui.composables.DatePickerField
 import br.com.saves.ui.composables.Dropdown
+import br.com.saves.ui.composables.FinanceInstitutionDropdown
 import br.com.saves.ui.composables.SavesButton
 import br.com.saves.ui.composables.SavesTextField
 import br.com.saves.ui.composables.SavesTopBar
@@ -107,12 +108,11 @@ fun IncomeScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
                         )
 
-                        Dropdown(
+                        val bankAccount = if (accountId.isNotEmpty()) uiState.bankAccounts.find { it.id == accountId } else null
+                        FinanceInstitutionDropdown(
                             placeholder = { Text(stringResource(id = R.string.account)) },
-                            notSetLabel = stringResource(id = R.string.account),
                             items = uiState.bankAccounts,
-                            itemToString = { it.name },
-                            selectedItem = if (accountId.isNotEmpty()) uiState.bankAccounts.find { it.id == accountId } else null,
+                            selectedItem = bankAccount,
                             onItemSelected = { _, item ->
                                 accountId = item.id
                             }

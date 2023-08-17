@@ -9,23 +9,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +29,6 @@ import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,11 +83,11 @@ fun AccountsContainer(
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            bankAccounts.forEach { bankAccount ->
+            bankAccounts.forEachIndexed { index, bankAccount ->
                 AccountContainer(
                     bankAccount = bankAccount,
                     onClick = { /*TODO*/ },
-                    icon = bankAccount.bank.icon,
+                    icon = bankAccount.institution.icon,
                 )
             }
         }
@@ -142,10 +137,10 @@ fun AccountContainer(
             .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val iconTint = if (bankAccount.bank.foreground != null) {
-            Color(bankAccount.bank.foreground)
+        val iconTint = if (bankAccount.institution.foreground != null) {
+            Color(bankAccount.institution.foreground)
         } else Color.Unspecified
 
         Icon(
@@ -153,34 +148,39 @@ fun AccountContainer(
             tint = iconTint,
             contentDescription = null,
             modifier = Modifier
-                .size(32.dp)
+                .size(40.dp)
                 .clip(RoundedCornerShape(100f))
-                .background(Color(bankAccount.bank.background))
+                .background(Color(bankAccount.institution.background))
                 .padding(8.dp)
         )
-        val name =
-            if (bankAccount.name == "default") stringResource(id = R.string.wallet)
-            else bankAccount.name
+
+        val name = when (bankAccount.name) {
+            Bank.BANK_DEFAULT.name -> stringResource(id = R.string.wallet)
+            else -> bankAccount.name
+        }
 
         Text(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
             text = name,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
-        Column(horizontalAlignment = Alignment.End) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
                 text = stringResource(id = R.string.balance),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = bankAccount.balance.toCurrency(),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -210,7 +210,7 @@ fun NewAccountForm(
     onCreateBankAccount: (BankAccount) -> Unit
 ) {
 
-    var bank by remember { mutableStateOf(Bank.DEFAULT) }
+    var bank by remember { mutableStateOf(Bank.BANK_DEFAULT) }
     var name by remember { mutableStateOf("") }
     var balance by remember { mutableStateOf("") }
 
@@ -264,7 +264,7 @@ fun NewAccountForm(
                     val bankAccount = BankAccount(
                         id = UUID.randomUUID().toString(),
                         name = name,
-                        bank = bank,
+                        institution = bank,
                         balance = balance.toDouble() / 100,
                     )
                     onCreateBankAccount(bankAccount)
@@ -338,7 +338,11 @@ fun BankIconDropdown(
             ) {}
         }
         Spacer(modifier = Modifier.size(16.dp))
-        Text(text = stringResource(id = R.string.select_the_icon), color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.widthIn(max = 100.dp))
+        Text(
+            text = stringResource(id = R.string.select_the_icon),
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.widthIn(max = 100.dp)
+        )
     }
 
     if (expanded) {
@@ -413,15 +417,16 @@ fun BankIconDropdownDialogPreview() {
     BankIconDropdownDialog(
         onDismissRequest = {},
         items = Bank.values().asList(),
-        onClick = { _, _ ->}
+        onClick = { _, _ -> }
     )
 }
+
 @Preview
 @Composable
 fun BankIconDropdownPreview() {
     BankIconDropdown(
         items = Bank.values().asList(),
-        onItemSelected = { _, _, ->}
+        onItemSelected = { _, _ -> }
     )
 }
 
@@ -431,10 +436,17 @@ fun BankIconDropdownItem(
     onClick: () -> Unit,
 ) {
     IconButton(
-        modifier = Modifier.padding(16.dp).background(MaterialTheme.colorScheme.surface),
+        modifier = Modifier
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.surface),
         onClick = onClick
     ) {
-        Icon(modifier = Modifier.size(24.dp), painter = icon, contentDescription = null, tint = Color.Unspecified)
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = icon,
+            contentDescription = null,
+            tint = Color.Unspecified
+        )
     }
 }
 

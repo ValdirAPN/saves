@@ -63,7 +63,7 @@ class BankAccountNetworkDataSourceImpl @Inject constructor() : BankAccountNetwor
 
         val bank = if (bankValue.toString().isNotBlank()) {
             Bank.valueOf(bankValue.toString())
-        } else Bank.DEFAULT
+        } else Bank.BANK_DEFAULT
 
         return NetworkBankAccount(id.toString(), bank, name.toString(), amount.toString().toDouble())
     }

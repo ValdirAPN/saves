@@ -3,8 +3,14 @@ package br.com.saves.model
 import androidx.annotation.DrawableRes
 import br.com.saves.R
 
-enum class Bank(@DrawableRes val icon: Int, val title: String, val background: Long, val foreground: Long?) {
-    DEFAULT(R.drawable.wallet, "default", background = 0xFF242424, foreground = 0xFFFFFFFF),
+enum class Bank(
+    @DrawableRes val icon: Int,
+    val title: String,
+    val background: Long,
+    val foreground: Long?
+) : FinanceInstitution {
+
+    BANK_DEFAULT(R.drawable.wallet, "BANK_DEFAULT", background = 0xFF242424, foreground = 0xFFFFFFFF),
     NUBANK(R.drawable.nubank, "Nubank", background = 0xFF820AD1, foreground = 0xFFFFFFFF),
     BB(R.drawable.banco_do_brasil, "Banco do Brasil", background = 0xFF0061AA, foreground = 0xFFFFFFFF),
     ITAU(R.drawable.itau, "Itaú", background = 0xFFFFF212, foreground = null),
@@ -16,5 +22,9 @@ enum class Bank(@DrawableRes val icon: Int, val title: String, val background: L
     CAIXA(R.drawable.caixa_economica, "Caixa Econômica", background = 0xFF0070AF, foreground = null),
     BTG(R.drawable.btg, "BTG Pactual", background = 0xFF001E61, foreground = 0xFFFFFFFF),
     INTER(R.drawable.inter, "Inter", background = 0xFFFF7A00, foreground = 0xFFFFFFFF),
-    PAN(R.drawable.pan, "Banco Pan", background = 0xFF414141, foreground = 0xFFFFFFFF)
+    PAN(R.drawable.pan, "Banco Pan", background = 0xFF414141, foreground = 0xFFFFFFFF);
+
+    override fun getIconRes() = this.icon
+    override fun getIconTint() = this.foreground
+    override fun getIconBackground() = this.background
 }

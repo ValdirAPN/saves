@@ -2,7 +2,6 @@ package br.com.saves.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import br.com.saves.model.Bank
 import br.com.saves.model.CreditCard
 import br.com.saves.model.CreditCardIssuer
 
@@ -21,7 +20,7 @@ data class CreditCardEntity(
 
 fun CreditCardEntity.asModel() = CreditCard(
     id = id,
-    issuer = issuer,
+    institution = issuer,
     name = name,
     limit = limit,
     availableLimit = availableLimit,

@@ -18,7 +18,7 @@ data class BankAccountEntity(
 
 fun BankAccountEntity.asModel() = BankAccount(
     id = id,
-    bank = bank,
+    institution = bank,
     name = name,
     balance = balance
 )
